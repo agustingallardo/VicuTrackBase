@@ -1,0 +1,71 @@
+**1
+D:/VicuTrackBase/.Analysis Data/VicuTrackBase_FLASH_PnE U-MultiLink_0.abs
+
+**Lines
+
+"Function": "Address"(width 80, sort, int); "Function"(width 200, sort); "Coverage %"(width 80, sort, float); "ASM Decision Coverage %"(width 80, sort, float); "ASM Count"(width 80, sort, int); "Time"(width 80, sort, float); "Size"(width 80, sort, int)
+"Source"(bold, courier): "Line"(width 80, source_line); "Instruction"(width 300, source_file); "Coverage %"(width 90, int); "ASM Decision Coverage"(width 100); "ASM Count"(width 80, int); "Time"(width 80, float)
+"Assembly"(courier): "Address"(width 80, ident 1); "Instruction"(width 300, ident 3); "Coverage %"(width 110, coverage); "ASM Decision Coverage"(width 100, decision_coverage); "ASM Count"(width 80, int); "Time"(width 80, float)
+
+**Data
+
+*0
+
+
+**Procedures
+
+
+"Procedure": "0x8000"; "loadByte"; "14"; "16933"; "4294967295"
+"Procedure": "0x800e"; "Init"; "109"; "16965"; "4294967295"
+"Procedure": "0x807b"; "_Startup"; "9"; "17047"; "4294967295"
+"Procedure": "0x8092"; "Init_CPU"; "73"; "93"; "4294967295"
+"Procedure": "0x80db"; "Cpu_Delay100US"; "25"; "182"; "4294967295"
+"Procedure": "0x80f4"; "CPU_PrenderRTC"; "16"; "256"; "4294967295"
+"Procedure": "0x8104"; "ISR_RTC"; "19"; "402"; "4294967295"
+"Procedure": "0x8117"; "ISR_TRANSCEIVER"; "81"; "447"; "4294967295"
+"Procedure": "0x8168"; "ISR_OVR"; "9"; "535"; "4294967295"
+"Procedure": "0x8171"; "Init_LED"; "8"; "4770"; "4294967295"
+"Procedure": "0x8179"; "LED_PrenderR"; "3"; "4819"; "4294967295"
+"Procedure": "0x817c"; "LED_ApagarR"; "3"; "4861"; "4294967295"
+"Procedure": "0x817f"; "LED_PrenderV"; "3"; "4902"; "4294967295"
+"Procedure": "0x8182"; "LED_ApagarV"; "3"; "4944"; "4294967295"
+"Procedure": "0x8185"; "LED_BrillarR"; "43"; "4985"; "4294967295"
+"Procedure": "0x81b0"; "LED_BrillarV"; "43"; "5087"; "4294967295"
+"Procedure": "0x81db"; "SD_SendCommand"; "154"; "5846"; "4294967295"
+"Procedure": "0x8275"; "SD_ReadData"; "97"; "6123"; "4294967295"
+"Procedure": "0x82d6"; "SD_Init"; "461"; "6458"; "4294967295"
+"Procedure": "0x84a3"; "SD_ReadSector"; "98"; "6646"; "4294967295"
+"Procedure": "0x8505"; "SD_WriteSector"; "130"; "6787"; "4294967295"
+"Procedure": "0x8587"; "SD_Escribir"; "177"; "7719"; "4294967295"
+"Procedure": "0x8638"; "SD_LeerDireccion"; "63"; "7997"; "4294967295"
+"Procedure": "0x8677"; "SD_CalculaDireccion"; "232"; "8113"; "4294967295"
+"Procedure": "0x875f"; "Init_Trans"; "148"; "10185"; "4294967295"
+"Procedure": "0x87f3"; "Transceiver_SetAlto"; "6"; "10329"; "4294967295"
+"Procedure": "0x87f9"; "Transceiver_SetBajo"; "6"; "10382"; "4294967295"
+"Procedure": "0x87ff"; "Transceiver_Prender"; "4"; "10435"; "4294967295"
+"Procedure": "0x8803"; "Transceiver_EnviarByte"; "26"; "10540"; "4294967295"
+"Procedure": "0x881d"; "Transceiver_EnviarACK"; "46"; "10799"; "4294967295"
+"Procedure": "0x884b"; "Transceiver_ControlarDato"; "62"; "10912"; "4294967295"
+"Procedure": "0x8889"; "Transceiver_ControlarPaquete"; "146"; "11009"; "4294967295"
+"Procedure": "0x891b"; "Transceiver_EnviarTurno"; "61"; "11105"; "4294967295"
+"Procedure": "0x8958"; "main"; "157"; "14112"; "4294967295"
+"Procedure": "0x89f5"; "SPI_Init"; "13"; "14819"; "4294967295"
+"Procedure": "0x8a02"; "SPI_SendByte"; "12"; "14873"; "4294967295"
+"Procedure": "0x8a0e"; "SPI_ReceiveByte"; "12"; "14957"; "4294967295"
+"Procedure": "0x8a1a"; "_PUSH_ARGS_L"; "32"; "60435"; "4294967295"
+"Procedure": "0x8a3a"; "_ENTER_UNARY_L"; "41"; "60509"; "4294967295"
+"Procedure": "0x8a63"; "_ENTER_BINARY_L"; "22"; "60632"; "4294967295"
+"Procedure": "0x8a79"; "_ENTER_BINARY_L_RC"; "25"; "60674"; "4294967295"
+"Procedure": "0x8a92"; "_LAND_k_is_k_and_j"; "31"; "61681"; "4294967295"
+"Procedure": "0x8ab1"; "_LOR_k_is_k_or_j"; "31"; "61850"; "4294967295"
+"Procedure": "0x8ad0"; "_LCMP_k_rel_j"; "31"; "63401"; "4294967295"
+"Procedure": "0x8aef"; "_ILSL"; "12"; "64389"; "4294967295"
+"Procedure": "0x8afb"; "_LINC"; "22"; "64493"; "4294967295"
+"Procedure": "0x8b11"; "_LAND_RC"; "6"; "65109"; "4294967295"
+"Procedure": "0x8b17"; "_LOR"; "6"; "65149"; "4294967295"
+"Procedure": "0x8b1d"; "_LLSR"; "22"; "65923"; "4294967295"
+"Procedure": "0x8b33"; "_LLSL"; "22"; "66023"; "4294967295"
+"Procedure": "0x8b49"; "_LCMP"; "6"; "66123"; "4294967295"
+"Procedure": "0x8b4f"; "_LCMP_RC"; "6"; "66155"; "4294967295"
+"Procedure": "0x8b55"; "_POP32"; "26"; "66458"; "4294967295"
+

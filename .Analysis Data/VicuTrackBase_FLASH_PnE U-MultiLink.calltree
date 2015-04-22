@@ -1,0 +1,10 @@
+**1
+D:/VicuTrackBase/.Analysis Data/VicuTrackBase_FLASH_PnE U-MultiLink_0.abs
+
+**Lines
+
+"Call Pair": "Caller ID"(width 70, sort, int); "Caller Name"(width 200, sort, string); "Call Site"(width 70, sort, int); "Callee ID"(width 70, sort, int); "Callee Name"(width 200, sort, string); "Number of calls"(width 80, sort, int); "Source File Path"(width 2056, sort, string); "Line Number"(width 60, sort, int); "%% Total calls of parent"(width 60, sort, float); "%% Total times it was called"(width 60, sort, float); "Max Call Stack"(width 10, sort, string); "Max Size Stack"(width 10, sort, string); "Inclusive Time"(width 70, sort, float)
+**Data
+
+*0
+
