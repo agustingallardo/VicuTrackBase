@@ -1,20 +1,21 @@
+/*
+ @file sd.c
+ !@brief Define variables e implementa funciones necesarias para el manejo de la sd
+ */
+
 #include "sd.h"
 
-/*
-#pragma MESSAGE DISABLE C1825
-#pragma MESSAGE DISABLE C2705
-*/
-
+//! Vector que almacena la direccion en donde debe realizarse la proxima escritura
 byte dir_escritura[4];
 
-extern UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid];
-
+//! Estructura que almacena informacion del tipo de tarjeta sd que se esta utilizando
 struct {
   UINT8 NUM_BLOCKS;
   UINT8 SDHC;
   UINT8 VERSION2;
 } gSDCard;
 
+extern UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid];
 
 UINT8 SD_SendCommand(UINT8 u8SDCommand, UINT32 u32Param, UINT8 pu32Response[], UINT8 u8ResponseLength) {
   UINT8 u8R1;
@@ -30,18 +31,22 @@ UINT8 SD_SendCommand(UINT8 u8SDCommand, UINT32 u32Param, UINT8 pu32Response[], U
   //SPI_SS = ENABLE;
  
   /* Send Start byte */
-  WriteSPIByte((UINT8)(u8SDCommand | 0x40));
-
+  //WriteSPIByte((UINT8)(u8SDCommand | 0x40));
+  SPI_SendByte((UINT8)(u8SDCommand | 0x40));
+  
   /* Send Argument */
   for(u8Counter = 0; u8Counter < 4; u8Counter++) {
-     WriteSPIByte(buffer[u8Counter]);
+     //WriteSPIByte(buffer[u8Counter]);
+     SPI_SendByte(buffer[u8Counter]);
   }
 
   /* Send CRC */
   if((u8SDCommand & 0x02F) == SD_CMD8_SEND_IF_COND) {
-    WriteSPIByte(0x87);
+	  SPI_SendByte(0x87);
+	  //WriteSPIByte(0x87);
   } else {
-    WriteSPIByte(0x95);
+	  //WriteSPIByte(0x95);
+	  SPI_SendByte(0x95);
   }
   
   /*
@@ -55,7 +60,8 @@ UINT8 SD_SendCommand(UINT8 u8SDCommand, UINT32 u32Param, UINT8 pu32Response[], U
   /* Response RHandler (R1) */
   u8Counter = SD_WAIT_CYCLES;
   do {
-      u8R1 = ReadSPIByte();							//Recibe Respuesta de SD (R1=1byte)
+      //u8R1 = ReadSPIByte();							//Recibe Respuesta de SD (R1=1byte)
+      u8R1 = SPI_ReceiveByte();
       u8Counter--;
   } while(((u8R1 & 0x80) != 0) && (u8Counter > 0));
  
@@ -66,7 +72,8 @@ UINT8 SD_SendCommand(UINT8 u8SDCommand, UINT32 u32Param, UINT8 pu32Response[], U
   
    
   for (u8Counter = 0; u8Counter < u8ResponseLength; u8Counter++)  {
-    pu32Response[u8Counter] = ReadSPIByte();
+    //pu32Response[u8Counter] = ReadSPIByte();
+	  pu32Response[u8Counter] = SPI_ReceiveByte();
   }
   
   /* Disable CS */  
@@ -84,19 +91,21 @@ UINT8 SD_ReadData(UINT8 pu8DataPointer[], UINT32 u32DataLength) {
   //SPI_SS = ENABLE;
 
   for(u32Counter = 0; u32Counter < u32DataLength; u32Counter++) {
-    pu8DataPointer[u32Counter] = ReadSPIByte();
+    //pu8DataPointer[u32Counter] = ReadSPIByte();
+    pu8DataPointer[u32Counter] = SPI_ReceiveByte();
   }
 
   for(u32Counter = 0; u32Counter < 2; u32Counter++) {
-    CRC[u32Counter] = ReadSPIByte();
+    //CRC[u32Counter] = ReadSPIByte();
+    CRC[u32Counter] = SPI_ReceiveByte();
   }
 
   /* Disable CS */  
   //SPI_SS = DISABLE;
 
-  (void) ReadSPIByte(); // Unknown issue. SPI dummy cicle required by some cards
-
-	return (SD_OK);  
+  //(void) ReadSPIByte(); // Unknown issue. SPI dummy cicle required by some cards
+  (void) SPI_ReceiveByte();
+  return (SD_OK);  
 }
 
 
@@ -107,18 +116,24 @@ UINT8 SD_WriteData(UINT8 pu8DataPointer[], UINT32 u32DataLength) {
 
 	//SPI_SS = ENABLE;
 	
-	WriteSPIByte(0xFE);
+  //WriteSPIByte(0xFE);
+  SPI_SendByte(0xFE);
     
-	for(u32Counter = 0; u32Counter < u32DataLength; u32Counter++)
-		WriteSPIByte(pu8DataPointer[u32Counter]);
+  for(u32Counter = 0; u32Counter < u32DataLength; u32Counter++){
+		//WriteSPIByte(pu8DataPointer[u32Counter]);
+		SPI_SendByte(pu8DataPointer[u32Counter]);
+  }
 
-	WriteSPIByte(0xFF);    // checksum Bytes not needed
-	WriteSPIByte(0xFF);
+  //WriteSPIByte(0xFF);    // checksum Bytes not needed
+  //WriteSPIByte(0xFF);
+  SPI_SendByte(0xFF);
+  SPI_SendByte(0xFF);
 	
   /* Response RHandler (R1) */
   u8Counter = SD_WAIT_CYCLES;
   do {
-		u8R1 = ReadSPIByte();
+		//u8R1 = ReadSPIByte();
+		u8R1 = SPI_ReceiveByte();
     u8Counter--;
   } while(((u8R1 & 0x80) != 0) && (u8Counter > 0)); // #001 wait for SD response <> 0xFF
    	 
@@ -126,13 +141,12 @@ UINT8 SD_WriteData(UINT8 pu8DataPointer[], UINT32 u32DataLength) {
  
   if(u8Counter == 0) return (SD_FAIL_TIMEOUT);
   
-	if((u8R1 & 0x1F) != 0x05) return (SD_FAIL_WRITE); // #001 checks if response = 0101 = data accepted
+  if((u8R1 & 0x1F) != 0x05) return (SD_FAIL_WRITE); // #001 checks if response = 0101 = data accepted
 	
-	while(ReadSPIByte()==0x00) ;  // Dummy SPI cycle
+  while(SPI_ReceiveByte()/*ReadSPIByte()*/==0x00) ;  // Dummy SPI cycle
 	
   return(SD_OK);	
 }
-
 
 UINT8 SD_Init(void) {
   //volatile UINT8 DelayFlag; 
@@ -147,7 +161,8 @@ UINT8 SD_Init(void) {
   gSDCard.VERSION2 = False;
   
   /* Initialize SPI Module */
-  InitSPI();
+  //InitSPI();
+  SPI_Init();
   
 	//for (u16Counter = 0; u16Counter < 3; u16Counter++) {
 	  
@@ -159,7 +174,7 @@ UINT8 SD_Init(void) {
     //tmrStart(250, &DelayFlag);
     //while(DelayFlag == 0) __RESET_WATCHDOG(); 		
 
-    for(u16Counter = 0; u16Counter < 10; u16Counter++) WriteSPIByte(0xFF); 
+    for(u16Counter = 0; u16Counter < 10; u16Counter++) SPI_SendByte(0xFF); /*WriteSPIByte(0xFF);*/ 
     
     /* Send CMD0 = go idle */ 
     for(u16Counter = 0; u16Counter < SD_INIT_RETRIES; u16Counter++) {
@@ -262,11 +277,6 @@ UINT8 SD_Init(void) {
   return (SD_OK);
 }
 
-/*****************************************************************************/
-//! Función para la lectura de un sector de disco de la tarjeta
-/*! 
-    Esta función realiza la lectura de un sector de 512 bytes de datos
-*/
 UINT8 SD_ReadSector(UINT32 u32SD_Block,UINT8 pu8DataPointer[]) {
   volatile UINT8 u8Temp = 0;
 
@@ -282,9 +292,10 @@ UINT8 SD_ReadSector(UINT32 u32SD_Block,UINT8 pu8DataPointer[]) {
     return (SD_FAIL_READ);
   }
   
-	while(u8Temp != 0xFE) u8Temp = ReadSPIByte(); 
-	//La SD responde 0xFF...0xFF mientras accede al sector y 0xFE cuando esta lista. 
-	//Los datos que envía a continuación corresponden al sector solicitado. 
+  //while(u8Temp != 0xFE) u8Temp = ReadSPIByte();
+  while(u8Temp != 0xFE) u8Temp = SPI_ReceiveByte();
+  //La SD responde 0xFF...0xFF mientras accede al sector y 0xFE cuando esta lista. 
+  //Los datos que envía a continuación corresponden al sector solicitado. 
 	
   if (SD_ReadData(pu8DataPointer,SD_BLOCK_SIZE) != SD_OK) return (SD_FAIL_READ);
   
@@ -292,7 +303,7 @@ UINT8 SD_ReadSector(UINT32 u32SD_Block,UINT8 pu8DataPointer[]) {
   
   return (SD_OK);
 }
-/*****************************************************************************/
+
 UINT8 SD_WriteSector(UINT32 u32SD_Block, UINT8 * pu8DataPointer) {
     UINT16 u16Counter;
     UINT8  SD_response;
@@ -308,197 +319,40 @@ UINT8 SD_WriteSector(UINT32 u32SD_Block, UINT8 * pu8DataPointer) {
       return (SD_FAIL_WRITE);      
     }
     
-    WriteSPIByte(0xFE);    
+    //WriteSPIByte(0xFE);
+    SPI_SendByte(0xFE);
 		
-     for(u16Counter = 0; u16Counter < SD_BLOCK_SIZE; u16Counter++)
-			WriteSPIByte(*pu8DataPointer++);
+     for(u16Counter = 0; u16Counter < SD_BLOCK_SIZE; u16Counter++){
+			//WriteSPIByte(*pu8DataPointer++);
+			SPI_SendByte(*pu8DataPointer++);
+     }
 
-    WriteSPIByte(0xFF);    // checksum Bytes not needed
-    WriteSPIByte(0xFF);
+    //WriteSPIByte(0xFF);    // checksum Bytes not needed
+    //WriteSPIByte(0xFF);
+    SPI_SendByte(0xFF);
+    SPI_SendByte(0xFF);
     
-		SD_response=0xFF; 
-    while (SD_response == 0xFF) SD_response = ReadSPIByte(); 
+	SD_response=0xFF; 
+    while (SD_response == 0xFF) SD_response = SPI_ReceiveByte(); /*ReadSPIByte();*/ 
     if((SD_response & 0x0F) != 0x05) {
         SPI_SS=DISABLE;
         return (SD_FAIL_WRITE);    
     }
 		
-	while(ReadSPIByte()==0x00) ;  // Dummy SPI cycle
-    (void) ReadSPIByte();
+	while(SPI_ReceiveByte()/*ReadSPIByte()==0x00*/) ;  // Dummy SPI cycle
+    //(void) ReadSPIByte();
+    (void) SPI_ReceiveByte();
     SPI_SS = DISABLE;
 	
     return (SD_OK);
 }
 
-//ARRANCAN LAS FUNCIONES DE LOS CHICOS*************************************************************************************
-
-//***********************************************************************   SD_PRENDER
-
-
-error SD_Prender(){
-    word Index;
-    byte Rx,arg[4];
-    int timer=0;
-    SPIC1_SPE = 1;     // Enable device
-    (void)SPIS;
-    (void)SD_SetBaudRateMode(SD_BM_285_714KHZ);
-  	SD_DesAssert();    //Hacemos un Desassert (-SS=1 Activo en baja)
-  	for ( Index=0 ; Index < 10 ; Index ++ )	// Send dummy char
-  	    (void)SD_EnviarByte(DUMMY_BYTE);
-    (void)Cpu_Delay100US(100);
-  	SD_Assert();       //Hacemos un Assert (-SS=0 Activo en baja)
-  	arg[0]=0x00;
-  	arg[1]=0x00;
-    arg[2]=0x00;
-    arg[3]=0x00;
-    //Protocolo para Inicializar el modo SPI en la SD 
-    (void)SD_EnviarCMD(CMD0,arg);      //Enviamos el CMD0
-  	(void)SD_EnviarCMD(CMD1,arg);      //Enviamos el CMD1
-    do{
-        (void)SD_EnviarCMD(CMD1,arg);	  
-    	  (void)SD_EnviarRecibirByte(DUMMY_BYTE,&Rx);
-    	  (void)SD_EnviarRecibirByte(DUMMY_BYTE,&Rx);
-    	  (void)SD_EnviarRecibirByte(DUMMY_BYTE,&Rx);
-    }while(Rx != 0 && timer++ < TIMER_RESP);
-  	if(timer >= TIMER_RESP)
-  	    return _ERR_TIMER;	
-  	return _ERR_OK;	
-}
-
-
-//***********************************************************************   SD_ENVIARCMD
-
-
-error SD_EnviarCMD(byte CMD,byte *ARG){
-    (void)SD_EnviarByte(CMD);
-    (void)SD_EnviarByte(ARG[0]);
-    (void)SD_EnviarByte(ARG[1]);
-    (void)SD_EnviarByte(ARG[2]);
-    (void)SD_EnviarByte(ARG[3]);
-    if(CMD == CMD0)
-        (void)SD_EnviarByte(CRC_CMD0);
-    else
-        (void)SD_EnviarByte(DUMMY_BYTE);
-    return _ERR_OK;
-}
-
-
-//***********************************************************************   SD_ENVIARBYTE
-
-
-error SD_EnviarByte(byte  Data){
-    do{          // Wait for transmit buffer become empty
-        //WatchDog_Clear();
-    }while(!SPIS_SPTEF);
-    SPID=Data;   // Put into transmit buffer
-    do{          // Wait for transmit buffer become empty
-        //WatchDog_Clear();
-    }while(!SPIS_SPTEF);
-    return _ERR_OK;
-}
-
-
-//***********************************************************************   SD_RECIBIRBYTE
-
-
-error SD_RecibirByte( byte *Rx ){
-    // Init SPI transfer
-    (void)SD_EnviarByte( DUMMY_BYTE );
-    do{        // Wait for recive buffer become full
-       //WatchDog_Clear();
-    }while(!SPIS_SPRF);
-    *Rx=SPID;  // Read receive buffer
-    return _ERR_OK; 
-}
-
-
-//***********************************************************************   SD_ENVIARRECIBIRBYTE
-
-
-error SD_EnviarRecibirByte(byte Tx,byte *Rx){
-    do{
-    }while(!SPIS_SPTEF);
-    SPID=Tx;
-    do{
-    }while(!SPIS_SPTEF);
-    do{
-    }while(!SPIS_SPRF);
-    *Rx=SPID;
-    return _ERR_OK; 
-}
-
-
-//***********************************************************************   SD_LEER
-
-
-error SD_Leer(byte TipoLectura,byte *direccion,byte* lectura) {
-    byte arg[4],test;
-    int h=0,TAM_LECTURA;
-    int i=0;
-    (void)SD_Assert();
-    if(TipoLectura){ // Bloque de 512 bytes
-        arg[0]=0x00;
-    	  arg[1]=0x00;
-        arg[2]=0x02;
-        arg[3]=0x00;
-        TAM_LECTURA=512;
-    }else{ // Leemos 23 bytes
-        arg[0]=0x00;
-    	  arg[1]=0x00;
-        arg[2]=0x00;
-        arg[3]=0x17;
-        TAM_LECTURA=22;
-    }
-    // Enviar cmd16 y leeremos segun el tipo de lectura
-  	(void)SD_EnviarCMD(CMD16,arg);
-  	// esperamos la respuesta del cmd16
-  	h=0;
-  	do{
-  	    (void)SD_RecibirByte(&test);
-    }while(test != 0 && h++ < TIMER_RESP);
-  	if(h > TIMER_RESP)
-  	    return _ERR_TIMER;	
-    // Trying to read a BLOCK
-  	// Enviamos el cmd17 donde indicamos el inicio de la lectura
-  	(void)SD_EnviarCMD(CMD17,direccion);
-  	// esperamos la respuesta R1 del cmd17 es decir un 0
-  	h=0;
-  	do{
-  	    (void)SD_RecibirByte(&test);
-  	}while(test != 0 && h++ < TIMER_RESP);
-    if(h > TIMER_RESP)
-  	    return _ERR_TIMER;	
-  	// Recibimos el FE?--->Data token for reading 11111110 =)
-  	h=0;
-  	do{
-  	    (void)SD_RecibirByte(&test);
-  	}while(test != 254 && h++ < TIMER_RESP);
-  	if(h > TIMER_RESP)
-  	    return _ERR_TIMER;	
-    //Guardamos lo q leeemos segun TipoLectura     
-  	h=0; 
-  	do {
-  	    (void)SD_RecibirByte(&lectura[i]);
-  	    i++;
-  	}while(h++ < TAM_LECTURA);
-    do{
-        (void)SD_RecibirByte(&test);
-    }while(test != 0xff);
-    (void)SD_DesAssert();
-    (void)Cpu_Delay100US(100);    
-    return _ERR_OK;
-
-} 
-
-
-//***********************************************************************   SD_ESCRIBIR
-
-
 error SD_Escribir(byte *direccion,UINT8 buf[][tam_datoconid]){
 	UINT32 u32SD_Block; // Convertimos la direccion en una variable de 32 bits
 	byte tem;
 	
-	InitSPI();
+	//InitSPI();
+	SPI_Init();
 	u32SD_Block = direccion[0];
 	u32SD_Block <<= 8;
 	u32SD_Block |= direccion[1];
@@ -508,71 +362,10 @@ error SD_Escribir(byte *direccion,UINT8 buf[][tam_datoconid]){
 	u32SD_Block |= direccion[3];
 	
 	tem = SD_WriteSector(u32SD_Block, (UINT8 *) buf);
-	
-	//SD_DesAssert();  // Hacemos un Desassert (-SS=1 Activo en baja)
-	
+
 	(void)Cpu_Delay100US(100);
-	
-	//SD_Assert();     // Hacemos un Assert (-SS=0 Activo en baja)
-	
-	/*byte Rx;
-    int i=0 , h=0 , cantidad_espacios=0 , j=0;
-    (void)SD_EnviarCMD(CMD24,direccion);  // CMD24 para escribir
-    // Debemos recibir respuesta R1
-		do{
-		    (void)SD_RecibirByte(&Rx);
-		}while(Rx != 0 && h++ < TIMER_RESP);
-    if(h > TIMER_RESP)
-        return _ERR_TIMER;
-    (void)SD_EnviarByte(TOKEN);   // Enviar el FE--->Data token for write 11111110 =)
-    //Intentamos escribir
-    for(i=0 ; i < cantidad_datos ; i++){
-        h=0;    
-        do{
-	          (void)SD_EnviarByte(buf[i][h]);
-	          h++;  
-	      }while(h < (tam_datoconid));
-	      if(i < (cantidad_datos-1)){ 
-	          (void)SD_EnviarByte(0x0D);  
-	          (void)SD_EnviarByte(0x0A);
-	      } // cierra el IF
-    } // cierra el FOR
-    //Para completar el bloque de 512
-    //enviamos 1 espacio y luego 1 salto de linea
-    cantidad_espacios = TAM_BLOQUE-(cantidad_datos*(tam_datoconid+2));
-    for(j=0 ; j < cantidad_espacios ; j++) 
-        (void)SD_EnviarByte(0x20);
-    (void)SD_EnviarByte(0x0D);
-    (void)SD_EnviarByte(0x0A);
-    (void)SD_EnviarByte(ID_H); // Se envian dos CRC que no estan calculados.
-    (void)SD_EnviarByte(ID_L);
-    //Esperamos que la tarjeta termine de escribir
-    h=0;
-    do{
-		    (void)SD_RecibirByte(&Rx);
-		}while(Rx == 0xFF && h++ < TIMER_RESP);
-    do{ 
-        (void)SD_RecibirByte(&Rx);
-    }while(Rx == 0);
-    SD_DesAssert();  // Hacemos un Desassert (-SS=1 Activo en baja)
-	  (void)Cpu_Delay100US(100);
-	  SD_Assert();     // Hacemos un Assert (-SS=0 Activo en baja)*/
     return _ERR_OK;
 }
-
-
-//***********************************************************************   SD_SETBAUDRATEMODE
-
-
-error SD_SetBaudRateMode(byte Mod){
-    static const  byte SD_BaudRate[2] = {98,2};
-    if (Mod >= 2) {
-        return _ERR_BAUDRATE;
-    }
-    SPIBR = SD_BaudRate[Mod];
-    return _ERR_OK;
-}
-
 
 error SD_LeerDireccion(){
 	UINT32 u32SD_Block;
@@ -581,14 +374,8 @@ error SD_LeerDireccion(){
     
     u32SD_Block=DIRECCION_BIN; // Cargar la direccion del sector fisico donde se encuentran las direcciones de lectura y escritura
     
-    
     (void)SD_ReadSector(u32SD_Block, (UINT8 *) Buffer_Escritura); //Lee el sector que contiene las direcciones de lectura y escritura
     
-    //direccion = *((UINT32 *)(Buffer_Envio));
-    
-    /*for(i=0;i<4;i++)
-    	dir_lectura[i] = Buffer_Envio[0][i]; 
-    */												//Se guardan las direcciones en las variables
     for(i=0;i<4;i++)
     	dir_escritura[i] = Buffer_Escritura[0][i];
     
@@ -598,9 +385,6 @@ error SD_LeerDireccion(){
     
     return _ERR_OK;
 }
-
-//***********************************************************************   SD_CALCULARDIRECCION
-
 
 error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
     byte i;
@@ -616,9 +400,7 @@ error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
 	Auxiliar |= dir[3];
 	
 	Auxiliar += 1;
-	
-	//if(Auxiliar < 512) Buscar cuantos sectores tiene la tarjeta
-		//return _ERR_DIR;
+
 	dir[0]=(byte)(Auxiliar>>24);
 	dir[1]=(byte)(Auxiliar>>16);
 	dir[2]=(byte)(Auxiliar>>8);
@@ -631,46 +413,4 @@ error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
 	
 	(void) SD_WriteSector((UINT32) DIRECCION_BIN, (UINT8 *) buf);
     return _ERR_OK;            
-}
-
-
-//***********************************************************************   SD_ESCRIBIRPRUEBA
-
-
-error SD_escribirPrueba(){
-    byte Rx , leer[4];
-    int i=0 , h=0;
-    leer[0]=0x00;
-    leer[1]=0x00;
-    leer[2]=0x02;
-    leer[3]=0x00;
-    (void)SD_EnviarCMD(CMD24,leer);  // CMD24 para escribir
-    //Debemos recibir respuesta R1
-    h=0;
-    do{
-        (void)SD_RecibirByte(&Rx);
-    }while(Rx != 0 && h++ < TIMER_RESP);
-    if(h>TIMER_RESP)
-        return _ERR_TIMER;
-    (void)SD_EnviarByte(TOKEN);   // Enviar el FE--->Data token for write 11111110 =)
-     h=0;      //Intentamos escribir
-    //do {
-        (void)SD_EnviarByte(0x00);
-    	  (void)SD_EnviarByte(0x00);
-    	  (void)SD_EnviarByte(0x08);
-    	  (void)SD_EnviarByte(0x00);
-    //}while(h++ < 4);
-    (void)SD_EnviarByte(DUMMY_BYTE); // Se envian dos CRC que no estan calculados.
-    (void)SD_EnviarByte(DUMMY_BYTE);
-    h=0;
-    do{
-        (void)SD_RecibirByte(&Rx);
-    }while(Rx == 0xFF && h++ < TIMER_RESP);
-    do{ 
-        (void)SD_RecibirByte(&Rx);
-    }while(Rx == 0);
-    SD_DesAssert();    // Hacemos un Desassert (-SS=1 Activo en baja)
-    (void)Cpu_Delay100US(100);
-    SD_Assert();     // Hacemos un Assert (-SS=0 Activo en baja)
-    return _ERR_OK;
 }

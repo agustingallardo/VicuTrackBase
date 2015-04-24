@@ -1,4 +1,9 @@
-#pragma MESSAGE DISABLE C5703 
+/*
+ @file cpu.c
+ !@brief Define variables e implementa funciones necesarias para el manejo del cpu
+ */
+
+//#pragma MESSAGE DISABLE C5703 
 
 #include "derivative.h"
 #include "cpu.h"
@@ -49,8 +54,6 @@ error Init_CPU(void){
     return _ERR_OK;
 }
 
-//***********************************************************************   CPU_DELAY100US
-
 
 void Cpu_Delay100US(word us100){
     asm{
@@ -94,11 +97,6 @@ void CPU_ApagarRTC(){
   RTCSC=0x80;
 }
 
-
-//************Interrrupcion por RTC
-
-//#pragma TRAP_PROC
-
 interrupt VectorNumber_Vrtc void ISR_RTC(void){
     
     RTCSC = RTCSC | 0x80;   //limpiamos la bandera de interrupcion.
@@ -108,10 +106,6 @@ interrupt VectorNumber_Vrtc void ISR_RTC(void){
     index_col=0;
              
 }
-
-//******************* INTERRUPCIONES *******************//
-		    
-//#pragma TRAP_PROC
 
 interrupt VectorNumber_Vsci2rx void ISR_TRANSCEIVER(void){
     error result=0;
@@ -133,8 +127,6 @@ interrupt VectorNumber_Vsci2rx void ISR_TRANSCEIVER(void){
     }
     
 }
-
-
 
 interrupt VectorNumber_Vsci2err void ISR_OVR(void){
 	(void)SCI2S1;

@@ -1,12 +1,12 @@
-//**************************   INCLUDES   *******************************
+/*
+ @file error.h
+ !@brief Declara constantes para el manejo de errores
+ */
 
-
-
-
-//*************************   DEFINICIONES   ****************************
-
-
+//! Define el tipo de dato 'error' como un entero
 #define error int
+
+//! Define constantes para identificar los distintos tipos de errores
 #define _ERR_OK 1
 #define _ERR_COMAS 2
 #define _ERR_TRAMA_CRUDO 3
@@ -22,7 +22,4 @@
 #define _ERR_ACK 13
 #define _ERR_BUFFER_LLENO 14
 #define _ERR_DATO_LLENO 15
-
-
-//**************************   FUNCIONES   ******************************
-
+#define _ERR_DISTINTO 16

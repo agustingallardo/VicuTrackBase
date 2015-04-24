@@ -1,13 +1,17 @@
-#include "Transceiver.h"
+/*
+ @file transceiver.c
+ !@brief Define variables e implementa funciones necesarias para el manejo del transceiver
+ */
 
+#include "transceiver.h"
 
-int index_col;
+//! Variable utilizada como indice en el buffer de escritura
 int index_fil;
 
 extern byte Buffer_Rx[tam_paquete];
 extern UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid];
 extern byte dir_escritura[4];
-//extern byte ban_sd;
+extern byte nro_sec;
 
 error Init_Trans(void){
     byte i, CadenaInit[19]="WR 455000 3 9 3 0\r\n"; //configuracion del transceiver f=455MHz, Data Rate 9600bps, output power 100mw
@@ -21,9 +25,9 @@ error Init_Trans(void){
     // SCIC2: TIE=0,TCIE=0,RIE=1,ILIE=0,TE=1,RE=1,RWU=0,SBK=0
     SCI2C2 = 0x2C;
     // PIN set como salida
-    PTADD_PTADD0 = 1;
+    TransceiverSet_Direccion = 1;
     // PIN enable comosalida
-    PTADD_PTADD1 = 1;
+    TransceiverEnable_Direccion = 1;
     
     (void) Transceiver_Prender();
     (void) Transceiver_SetBajo();
@@ -32,54 +36,44 @@ error Init_Trans(void){
     	(void)Transceiver_EnviarByte(CadenaInit[i]);
     }
     
-    while(SCI2S1_RDRF == 0x00){
-    	asm{
-    		NOP
+    i=0;
+    while(i<19){
+    	if(SCI2S1_RDRF != 0x00){           //si hay algo en el buffer de recepcion lo guardo
+    		(void)SCI2S1;
+    		CadenaInit[i]=SCI2D;
+    		i++;
     	}
-    }
-    
-    return _ERR_OK;
+   }
+   
+   if(CadenaInit[0]=='P' && CadenaInit[1]=='A' && CadenaInit[2]=='R' && CadenaInit[3]=='A' 
+   && CadenaInit[5]=='4' && CadenaInit[6]=='5' && CadenaInit[7]=='5' && CadenaInit[8]=='0' && CadenaInit[9]=='0' && CadenaInit[10]=='0' 
+   && CadenaInit[12]=='3' && CadenaInit[14]=='9' && CadenaInit[16]=='3' && CadenaInit[18]=='0')
+   {
+	   return _ERR_OK;
+   }
+   else
+	   return _ERR_DISTINTO;
 }
-
-//***********************************************************************   TRANSCEIVER_SETALTO
-  
 
 error Transceiver_SetAlto(){
-    PTAD_PTAD0 = 1;
-
+	TransceiverSet = 1;
     return _ERR_OK;
 }
-
-
-//***********************************************************************   TRANSCEIVER_SETBAJO
-
 
 error Transceiver_SetBajo(){
-    PTAD_PTAD0 = 0;
+	TransceiverSet = 0;
     return _ERR_OK;
 }
 
-
-//***********************************************************************   TRANSCEIVER_PRENDER
-
-
 error Transceiver_Prender(){
-     PTAD_PTAD1 = 1; //Enable 1
+	TransceiverEnable = 1; //Enable 1
     return Transceiver_SetAlto();
 }
 
-
-//***********************************************************************   TRANSCEIVER_APAGAR
-
-
 error Transceiver_Apagar(){
-    PTAD_PTAD1 = 0; //Enable 0
+	TransceiverEnable = 0; //Enable 0
     return Transceiver_SetBajo();
 }
-
-
-//***********************************************************************   TRANSCEIVER_ENVIARBYTE
-
 
 error Transceiver_EnviarByte(byte d){
     (void)SCI2S1;         
@@ -91,44 +85,15 @@ error Transceiver_EnviarByte(byte d){
     return _ERR_OK;
 }
 
-
-//***********************************************************************   TRANSCEIVER_RECIBIRBYTE
-
-
 error Transceiver_RecibirByte(byte *Rxdat){
     if(SCI2S1_RDRF != 0x00){           //si hay algo en el buffer de recepcion lo guardo 
         (void)SCI2S1;
         *Rxdat=SCI2D;
         return _ERR_OK;
-    }else
+    }
+    else
         return _ERR_RXEMPTY;
 }
-
-
-
-//***********************************************************************   TRANSCEIVER_RECIBIR
-
-
-error Transceiver_Recibir(byte buf[tam_dato]){
-
-static int j=0;
-
-   
-   buf[j]=SCI2D;
-   j++;
-   if(j == tam_dato){ 
-      return _ERR_DATO_LLENO;
-      }
-      
-      return _ERR_OK;            
-}
-       
-
-
-
-
-//***********************************************************************   TRANSCEIVER_ENVIARACK
-
 
 error Transceiver_EnviarACK(byte id,byte nro_sec){
     int i;
@@ -141,11 +106,6 @@ error Transceiver_EnviarACK(byte id,byte nro_sec){
     }
     return _ERR_OK;
 }
-
-
-
-//***********************************************************************   TRANSCEIVER_CONTROLARDATO
-
 	    
 error Transceiver_ControlarDato(void){
     byte e=3;
@@ -163,39 +123,25 @@ error Transceiver_ControlarDato(void){
     return _ERR_DATO; 
 }
 
-
 error Transceiver_ControlarPaquete(void){
-
 		  byte k;
-          
-          if(nro_sec != Buffer_Rx[2]){
-          	
+         
+          if(nro_sec != Buffer_Rx[2]){ 	
              nro_sec=Buffer_Rx[2];
-          
              if(Transceiver_ControlarDato() != _ERR_OK)
-            	 return _ERR_ACK;      
-          
-          
+            	 return _ERR_ACK;              
              Buffer_Escritura[index_fil][0]=Buffer_Rx[0];// GUARDAMOS EL ID
-                  
              for(k=3;k<tam_paquete-1;k++)// copiamos los datos controlados al buffer para q se escriba una vez lleno
             	 Buffer_Escritura[index_fil][k-2]=Buffer_Rx[k];
-                  
              index_fil++;
-                  
              if(index_fil>=cantidad_datos){
-               	
             	 index_fil=0;
             	 (void)SD_Escribir(dir_escritura,Buffer_Escritura); // cuando esto ocurre se desabilitan              
             	 (void)SD_CalculaDireccion(dir_escritura,Buffer_Escritura);
-            	 //ban_sd=Buffer_Lleno;
               }
           }//cierra el if de nro sec
 return _ERR_OK;
 }
-
-
-
 
 error Transceiver_EnviarTurno(void){ //quien modifica el valor del id?? siempre se manda el mismo (deberia descomentar lo comentado?)
     static byte i=0x10;

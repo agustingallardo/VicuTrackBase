@@ -1,11 +1,10 @@
 #include <hidef.h>
 #include "derivative.h"
-#include "Error.h"
-#include "CPU.h"
-#include "LED.h"
-#include "SD.h"
-#include "Transceiver.h"
-//#include "Banderas.h"
+#include "error.h"
+#include "cpu.h"
+#include "led.h"
+#include "sd.h"
+#include "transceiver.h"
    
 
 #define UNSEG 10000

@@ -1,37 +1,36 @@
-#include "LED.h"
+/*
+ @file led.c
+ !@brief Define variables e implementa funciones necesarias para el manejo de los leds
+ */
+
+#include "led.h"
 #include "cpu.h"
 
 error Init_LED(void){
-    PTCDD_PTCDD5 =1;
-    PTCDD_PTCDD4 =1;
+	LedR_Direccion = 1;
+	LedV_Direccion = 1;
     return _ERR_OK;
 }
 
-//-- LED_PRENDERR -----------------
-
 void LED_PrenderR(){
-    PTCD_PTCD5 = 1;
+	LedR = 1;
 }
 
-//-- LED_APAGARR -----------------
 
 void LED_ApagarR(){
-    PTCD_PTCD5 = 0;
+	LedR = 0;
 }
 
-//-- LED_PRENDERV -----------------
 
 void LED_PrenderV(){
-    PTCD_PTCD4 = 1;
+	LedV = 1;
 }
 
-//-- LED_APAGARV -----------------
 
 void LED_ApagarV(){
-    PTCD_PTCD4 = 0;
+	LedV = 0;
 }
 
-//-- LED_BRILLARR ---------------
 
 void LED_BrillarR(int a, word b){
     int i;
@@ -43,7 +42,6 @@ void LED_BrillarR(int a, word b){
     }
 }
 
-//-- LED_BRILLARV ---------------
 
 void LED_BrillarV(int a, word b){
     int i;
