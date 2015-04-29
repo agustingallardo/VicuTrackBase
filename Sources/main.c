@@ -1,3 +1,8 @@
+/*
+ @file main.c
+ !@brief 
+ */
+
 #include <hidef.h>
 #include "derivative.h"
 #include "error.h"
@@ -6,24 +11,21 @@
 #include "sd.h"
 #include "transceiver.h"
    
-
+//! Define una constante utilizada como parametro en la funcion Cpu_Delay100US 
 #define UNSEG 10000
 
-
+//! Buffer donde se iran almacenando los datos recibidos desde el transceiver para luego escribirlos en la sd
 UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid]; // Vector para la transmision
+//! Buffer de recepción que almacena un dato recibido desde el transceiver
 byte Buffer_Rx[tam_paquete]; // vectores para recepcion de datos
-
+//! Bandera que informa si hay un dato disponible en el buffer de recepcion
 byte ban_transceiver/*, ban_sd*/;
+//! Variable que indica el valor del numero de secuencia del paquete que se recibio
 byte nro_sec;
 
 extern byte timer_turno;
 
-//---------- PROGRAMA PRINCIPAL ----------//
-
-void main(void) {
-
-//---Variables del MAIN---//
-		   
+void main(void) {  
     error temp=0, escribir=0;                   
     long intentos=0;
     
@@ -64,5 +66,3 @@ void main(void) {
         __RESET_WATCHDOG();
     }
 }
-
-//------------ FIN PROGRAMA PRINCIPAL -------------//

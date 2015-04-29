@@ -11,8 +11,9 @@
 
 //byte ban_TxTurno;
 //byte ban_Turno;
+//!Variable utilizada para saber con que frecuencia se envia un turno, la frecuencia disminuye cuando se esta comunicando con un movil
 byte timer_turno;
-int c;
+//int c;
 //int d;
 
 extern int index_col;
@@ -49,7 +50,7 @@ error Init_CPU(void){
     //ban_TxTurno=CORRIENDO;
     //ban_Turno=FIN;
     timer_turno=4;
-    c=0;
+    //c=0;
     //d=0;
     return _ERR_OK;
 }
@@ -120,9 +121,9 @@ interrupt VectorNumber_Vsci2rx void ISR_TRANSCEIVER(void){
     	ban_transceiver=HAYPAQUETE;
     	LED_BrillarV(1,300);
     	index_col=0;
-    	c++;
+    	/*c++;
     	if(c==16)
-    		c=0;
+    		c=0;*/
     	
     }
     

@@ -143,7 +143,7 @@ error Transceiver_ControlarPaquete(void){
 return _ERR_OK;
 }
 
-error Transceiver_EnviarTurno(void){ //quien modifica el valor del id?? siempre se manda el mismo (deberia descomentar lo comentado?)
+error Transceiver_EnviarTurno(void){
     static byte i=0x10;
     byte j=0;
     if(i>CANT_DISP)
