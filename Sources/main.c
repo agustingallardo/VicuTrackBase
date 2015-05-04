@@ -1,6 +1,6 @@
-/*
+/*!
  @file main.c
- !@brief 
+ @brief 
  */
 
 #include <hidef.h>
@@ -44,7 +44,7 @@ void main(void) {
     EnableInterrupts;
     CPU_PrenderRTC(RTC_1SEG,5);
     timer_turno=0;
-    
+   
 //---Comienza el trabajo---// 
     
     for(;;){

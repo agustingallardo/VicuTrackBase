@@ -1,7 +1,6 @@
-
-/*
+/*!
  @file sd.h
- !@brief Declara constantes y funciones para el manejo de la sd
+ @brief Declara constantes y funciones para el manejo de la sd
  */
 
 #include "derivative.h"

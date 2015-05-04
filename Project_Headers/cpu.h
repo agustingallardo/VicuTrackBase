@@ -1,6 +1,6 @@
-/*
+/*!
  @file cpu.h
- !@brief Declara constantes y funciones para el manejo del cpu
+ @brief Declara constantes y funciones para el manejo del cpu
  */
 
 #include "derivative.h"
@@ -10,7 +10,7 @@
 //* Constantes enviadas a la funcion CPU_PrenderRTC y determinan en que tiempo el RTC interrumpe
 #define RTC_1MS       0x08
 #define RTC_MED       0x0E
-#define RTC_1SEG      0x0D
+#define RTC_1SEG      0x0F
 #define RTC_1MIN      0x00
 
 //* Constantes utilizadas para indicar el tipo de paquete transmitido o recibido por el transceiver

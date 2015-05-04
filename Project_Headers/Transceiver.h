@@ -1,6 +1,6 @@
-/*
+/*!
  @file transceiver.h
- !@brief Declara constantes y funciones para el manejo del transceiver
+ @brief Declara constantes y funciones para el manejo del transceiver
  */
 
 #include "derivative.h"

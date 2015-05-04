@@ -1,6 +1,6 @@
-/*
+/*!
  @file spi.c
- !@brief Define variables e implementa funciones necesarias para el manejo del spi
+ @brief Define variables e implementa funciones necesarias para el manejo del spi
  */
 
 #include "spi.h"

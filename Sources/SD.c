@@ -1,11 +1,11 @@
-/*
+/*!
  @file sd.c
- !@brief Define variables e implementa funciones necesarias para el manejo de la sd
+ @brief Define variables e implementa funciones necesarias para el manejo de la sd
  */
 
 #include "sd.h"
 
-//! Vector que almacena la direccion en donde debe realizarse la proxima escritura
+//! Vector que almacena la direccion en donde debe realizarse la proxima escritura de datos
 byte dir_escritura[4];
 
 //! Estructura que almacena informacion del tipo de tarjeta sd que se esta utilizando
@@ -339,7 +339,7 @@ UINT8 SD_WriteSector(UINT32 u32SD_Block, UINT8 * pu8DataPointer) {
         return (SD_FAIL_WRITE);    
     }
 		
-	while(SPI_ReceiveByte()/*ReadSPIByte()==0x00*/) ;  // Dummy SPI cycle
+	while(SPI_ReceiveByte()/*ReadSPIByte()*/==0x00) ;  // Dummy SPI cycle
     //(void) ReadSPIByte();
     (void) SPI_ReceiveByte();
     SPI_SS = DISABLE;
@@ -390,7 +390,7 @@ error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
     byte i;
     
 	long Auxiliar;
-		
+	
 	Auxiliar = dir[0];
 	Auxiliar <<= 8;
 	Auxiliar |= dir[1];
@@ -410,6 +410,8 @@ error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
 	    
 	for(i=0;i<4;i++)
 		buf[0][i] = dir_escritura[i];
+	for(;i<8;i++)
+	    	buf[0][i] = 0x00;
 	
 	(void) SD_WriteSector((UINT32) DIRECCION_BIN, (UINT8 *) buf);
     return _ERR_OK;            

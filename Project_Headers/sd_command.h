@@ -1,6 +1,6 @@
-/*
+/*!
  @file sd_command.h
- !@brief Declara constantes para el manejo de la sd
+ @brief Declara constantes para el manejo de la sd
  */
 
 //! Define constantes 

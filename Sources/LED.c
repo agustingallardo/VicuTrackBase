@@ -1,6 +1,6 @@
-/*
+/*!
  @file led.c
- !@brief Define variables e implementa funciones necesarias para el manejo de los leds
+ @brief Define variables e implementa funciones necesarias para el manejo de los leds
  */
 
 #include "led.h"

@@ -1,6 +1,6 @@
-/*
+/*!
  @file cpu.c
- !@brief Define variables e implementa funciones necesarias para el manejo del cpu
+ @brief Define variables e implementa funciones necesarias para el manejo del cpu
  */
 
 //#pragma MESSAGE DISABLE C5703 

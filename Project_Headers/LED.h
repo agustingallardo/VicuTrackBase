@@ -1,6 +1,6 @@
-/*
+/*!
  @file led.h
- !@brief Declara constantes y funciones para el manejo de los leds
+ @brief Declara constantes y funciones para el manejo de los leds
  */
 
 #include "derivative.h"

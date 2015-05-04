@@ -1,6 +1,6 @@
-/*
+/*!
  @file transceiver.c
- !@brief Define variables e implementa funciones necesarias para el manejo del transceiver
+ @brief Define variables e implementa funciones necesarias para el manejo del transceiver
  */
 
 #include "transceiver.h"
@@ -136,8 +136,10 @@ error Transceiver_ControlarPaquete(void){
              index_fil++;
              if(index_fil>=cantidad_datos){
             	 index_fil=0;
-            	 (void)SD_Escribir(dir_escritura,Buffer_Escritura); // cuando esto ocurre se desabilitan              
+            	 (void)SD_Escribir(dir_escritura,Buffer_Escritura); // cuando esto ocurre se desabilitan 
             	 (void)SD_CalculaDireccion(dir_escritura,Buffer_Escritura);
+            	 LED_BrillarR(2,300);
+            	 LED_BrillarV(2,300);
               }
           }//cierra el if de nro sec
 return _ERR_OK;

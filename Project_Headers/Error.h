@@ -1,6 +1,6 @@
-/*
+/*!
  @file error.h
- !@brief Declara constantes para el manejo de errores
+ @brief Declara constantes para el manejo de errores
  */
 
 //! Define el tipo de dato 'error' como un entero

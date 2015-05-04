@@ -1,6 +1,6 @@
-/*
+/*!
  @file spi.h
- !@brief Declara constantes y funciones para el manejo del spi
+ @brief Declara constantes y funciones para el manejo del spi
  */
 
 #ifndef __SPI__
