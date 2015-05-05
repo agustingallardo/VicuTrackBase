@@ -17,6 +17,7 @@ led_c.obj                               Model: SMALL,         Lang: ANSI-C
 main_c.obj                              Model: SMALL,         Lang: ANSI-C
 sd_c.obj                                Model: SMALL,         Lang: ANSI-C
 spi_c.obj                               Model: SMALL,         Lang: ANSI-C
+storage_c.obj                           Model: SMALL,         Lang: ANSI-C
 transceiver_c.obj                       Model: SMALL,         Lang: ANSI-C
 start08_c.obj                           Model: SMALL,         Lang: ANSI-C
 mc9s08qe32_c.obj                        Model: SMALL,         Lang: ANSI-C
@@ -29,8 +30,8 @@ Entry point: 0x807B (_Startup)
 _startupData is allocated at 0x8084 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x100     562
-  _Copy    *toCopyDownBeg 0x8C03
+  _Range   pZeroOut       0x100     578
+  _Copy    *toCopyDownBeg 0x8E7A
 } _startupData;
 
 *********************************************************************************************
@@ -40,8 +41,8 @@ Section Name                    Size  Type     From       To       Segment
 .data                              1   R/W      0x100      0x100   RAM
 .init                            132     R     0x8000     0x8083   ROM
 .startData                        14     R     0x8084     0x8091   ROM
-.text                           2929     R     0x8092     0x8C02   ROM
-.copy                              7     R     0x8C03     0x8C09   ROM
+.text                           3560     R     0x8092     0x8E79   ROM
+.copy                              7     R     0x8E7A     0x8E80   ROM
 .abs_section_ffce                  2     R     0xFFCE     0xFFCF   .absSeg0
 .abs_section_ffd2                  2     R     0xFFD2     0xFFD3   .absSeg1
 .abs_section_ffd4                  2     R     0xFFD4     0xFFD5   .absSeg2
@@ -178,14 +179,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_1814                  2   N/I     0x1814     0x1815   .absSeg133
 .abs_section_1816                  2   N/I     0x1816     0x1817   .absSeg134
 .abs_section_1870                  2   N/I     0x1870     0x1871   .absSeg135
-.bss                               2   R/W      0x101      0x102   RAM
-.common                          559   R/W      0x103      0x331   RAM
-.stack                           128   R/W      0x332      0x3B1   RAM
+.bss                               8   R/W      0x101      0x108   RAM
+.common                          569   R/W      0x109      0x341   RAM
+.stack                           128   R/W      0x342      0x3C1   RAM
 .vectSeg136_vect                   2     R     0xFFFE     0xFFFF   .vectSeg136
 
 Summary of section sizes per section type:
-READ_ONLY (R):         C12 (dec:     3090)
-READ_WRITE (R/W):      2B2 (dec:      690)
+READ_ONLY (R):         E89 (dec:     3721)
+READ_WRITE (R/W):      2C2 (dec:      706)
 NO_INIT (N/I):          A0 (dec:      160)
 
 *********************************************************************************************
@@ -210,7 +211,7 @@ MODULE:                 -- cpu_c.obj --
      _Vector_24                                FFCE       2       2       0   .abs_section_ffce
      _Vector_22                                FFD2       2       2       0   .abs_section_ffd2
      _Vector_21                                FFD4       2       2       0   .abs_section_ffd4
-     timer_turno                                103       1       1       6   .common     
+     timer_turno                                109       1       1       6   .common     
      index_col                                  101       2       2       5   .bss        
 MODULE:                 -- led_c.obj --
 - PROCEDURES:
@@ -226,43 +227,56 @@ MODULE:                 -- main_c.obj --
 - PROCEDURES:
      main                                      81C3      9D     157       1   .text       
 - VARIABLES:
-     Buffer_Escritura                           104     200     512       6   .common     
-     Buffer_Rx                                  304      23      35       9   .common     
-     ban_transceiver                            327       1       1       4   .common     
-     nro_sec                                    328       1       1       3   .common     
+     Buffer_Escritura                           10A     200     512       7   .common     
+     Buffer_Rx                                  30A      23      35       9   .common     
+     ban_transceiver                            32D       1       1       4   .common     
+     nro_sec                                    32E       1       1       3   .common     
 MODULE:                 -- sd_c.obj --
 - PROCEDURES:
      SD_SendCommand                            8260      9A     154       8   .text       
      SD_ReadData                               82FA      61      97       2   .text       
-     SD_Init                                   835B     1CD     461      16   .text       
-     SD_ReadSector                             8528      62      98       1   .text       
-     SD_WriteSector                            858A      82     130       2   .text       
-     SD_Escribir                               860C      B1     177       1   .text       
-     SD_LeerDireccion                          86BD      3F      63       1   .text       
-     SD_CalculaDireccion                       86FC     100     256       1   .text       
+     SD_Init                                   835B     1D3     467      16   .text       
+     SD_ReadSector                             852E      62      98       3   .text       
+     SD_WriteSector                            8590      82     130       2   .text       
+     SD_Escribir                               8612      B1     177       1   .text       
+     SD_LeerDireccion                          86C3      3E      62       1   .text       
+     SD_CalculaDireccion                       8701     100     256       1   .text       
 - VARIABLES:
-     dir_escritura                              329       4       4       4   .common     
-     gSDCard                                    32D       3       3       7   .common     
+     dir_escritura                              32F       4       4       4   .common     
+     gSDCard                                    333       3       3       7   .common     
 MODULE:                 -- spi_c.obj --
 - PROCEDURES:
-     SPI_Init                                  87FC       D      13       2   .text       
-     SPI_SendByte                              8809       C      12       9   .text       
-     SPI_ReceiveByte                           8815       C      12       9   .text       
+     SPI_Init                                  8801       D      13       2   .text       
+     SPI_SendByte                              880E       C      12       9   .text       
+     SPI_ReceiveByte                           881A       C      12       9   .text       
 - VARIABLES:
+MODULE:                 -- storage_c.obj --
+- PROCEDURES:
+     LWordSwap                                 8826      7E     126       1   .text       
+     FAT_Read_Master_Block                     88A4     19F     415       8   .text       
+- VARIABLES:
+     u16Main_Offset                             103       2       2       4   .bss        
+     pMasterBoot.1                              105       2       2      10   .bss        
+     PartitionTable.2                           107       2       2       3   .bss        
+     u16FAT_Sector_Size                         336       2       2       1   .common     
+     u16FAT_Cluster_Size                        338       2       2       1   .common     
+     u16FAT_FAT_BASE                            33A       2       2       3   .common     
+     u16FAT_Root_BASE                           33C       2       2       3   .common     
+     u16FAT_Data_BASE                           33E       2       2       2   .common     
 MODULE:                 -- transceiver_c.obj --
 - PROCEDURES:
-     Init_Trans                                8821     10E     270       1   .text       
-     Transceiver_SetAlto                       892F       6       6       1   .text       
-     Transceiver_SetBajo                       8935       6       6       1   .text       
-     Transceiver_Prender                       893B       4       4       2   .text       
-     Transceiver_EnviarByte                    893F      1A      26       9   .text       
-     Transceiver_EnviarACK                     8959      2E      46       1   .text       
-     Transceiver_ControlarDato                 8987      3E      62       1   .text       
-     Transceiver_ControlarPaquete              89C5      AC     172       2   .text       
-     Transceiver_EnviarTurno                   8A71      3D      61       1   .text       
+     Init_Trans                                8A43     10E     270       1   .text       
+     Transceiver_SetAlto                       8B51       6       6       1   .text       
+     Transceiver_SetBajo                       8B57       6       6       1   .text       
+     Transceiver_Prender                       8B5D       4       4       2   .text       
+     Transceiver_EnviarByte                    8B61      1A      26       9   .text       
+     Transceiver_EnviarACK                     8B7B      2E      46       1   .text       
+     Transceiver_ControlarDato                 8BA9      3E      62       1   .text       
+     Transceiver_ControlarPaquete              8BE7      AC     172       2   .text       
+     Transceiver_EnviarTurno                   8C93      3D      61       1   .text       
 - VARIABLES:
      i.2                                        100       1       1       4   .data       
-     index_fil                                  330       2       2       5   .common     
+     index_fil                                  340       2       2       5   .common     
 MODULE:                 -- start08_c.obj --
 - PROCEDURES:
      loadByte                                  8000       E      14       5   .init       
@@ -271,7 +285,7 @@ MODULE:                 -- start08_c.obj --
 - VARIABLES:
      _startupData                              8084       6       6       4   .startData  
 - LABELS:
-     __SEG_END_SSTACK                           3B2       0       0       1               
+     __SEG_END_SSTACK                           3C2       0       0       1               
 MODULE:                 -- mc9s08qe32_c.obj --
 - PROCEDURES:
 - VARIABLES:
@@ -410,22 +424,25 @@ MODULE:                 -- mc9s08qe32_c.obj --
      _SCI2BD                                   1870       2       2       2   .abs_section_1870
 MODULE:                 -- rtshc08.o (ansiis.lib) --
 - PROCEDURES:
-     _PUSH_ARGS_L                              8AAE      20      32       2   .text       
-     _ENTER_UNARY_L                            8ACE      29      41       3   .text       
-     _ENTER_BINARY_L                           8AF7      16      22       2   .text       
-     _ENTER_BINARY_L_RC                        8B0D      19      25       2   .text       
-     _LAND_k_is_k_and_j                        8B26      1F      31       1   .text       
-     _LOR_k_is_k_or_j                          8B45      1F      31       1   .text       
-     _LCMP_k_rel_j                             8B64      1F      31       2   .text       
-     _ILSL                                     8B83       C      12       2   .text       
-     _LINC                                     8B8F      16      22       4   .text       
-     _LAND_RC                                  8BA5       6       6       2   .text       
-     _LOR                                      8BAB       6       6       6   .text       
-     _LLSR                                     8BB1      16      22       1   .text       
-     _LLSL                                     8BC7      16      22       8   .text       
-     _LCMP                                     8BDD       6       6       1   .text       
-     _LCMP_RC                                  8BE3       6       6       1   .text       
-     _POP32                                    8BE9      1A      26      18   .text       
+     _PUSH_ARGS_L                              8CD0      20      32       2   .text       
+     _ENTER_UNARY_L                            8CF0      29      41       3   .text       
+     _ENTER_BINARY_L                           8D19      16      22       3   .text       
+     _ENTER_BINARY_L_RC                        8D2F      19      25       2   .text       
+     _LADD_k_is_k_plus_j                       8D48      1F      31       1   .text       
+     _LAND_k_is_k_and_j                        8D67      1F      31       1   .text       
+     _LOR_k_is_k_or_j                          8D86      1F      31       1   .text       
+     _LCMP_k_rel_j                             8DA5      1F      31       2   .text       
+     _ILSL                                     8DC4       C      12       2   .text       
+     _LINC                                     8DD0      16      22       4   .text       
+     _LADD                                     8DE6       6       6       3   .text       
+     _LAND_RC                                  8DEC       6       6       4   .text       
+     _LOR                                      8DF2       6       6       6   .text       
+     _LLSR                                     8DF8      16      22       3   .text       
+     _LLSL                                     8E0E      16      22      10   .text       
+     _LCMP                                     8E24       6       6       1   .text       
+     _LCMP_RC                                  8E2A       6       6       1   .text       
+     _COPY                                     8E30      30      48       1   .text       
+     _POP32                                    8E60      1A      26      22   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -435,12 +452,13 @@ MODULE STATISTIC
   cpu_c.obj                                    3    199      6
   led_c.obj                                    0    106      0
   main_c.obj                                 549    157      0
-  sd_c.obj                                     7   1436      0
+  sd_c.obj                                     7   1441      0
   spi_c.obj                                    0     37      0
+  storage_c.obj                               16    541      0
   transceiver_c.obj                            3    653      0
   start08_c.obj                                0    132      0
   mc9s08qe32_c.obj                           160      0      0
-  rtshc08.o (ansiis.lib)                       0    341      0
+  rtshc08.o (ansiis.lib)                       0    426      0
   other                                      128     16      7
 
 *********************************************************************************************
@@ -451,16 +469,17 @@ SECTION: ".text"
   Init_LED LED_PrenderR LED_ApagarR LED_PrenderV LED_ApagarV LED_BrillarR 
   LED_BrillarV main SD_SendCommand SD_ReadData SD_Init SD_ReadSector 
   SD_WriteSector SD_Escribir SD_LeerDireccion SD_CalculaDireccion SPI_Init 
-  SPI_SendByte SPI_ReceiveByte Init_Trans Transceiver_SetAlto 
-  Transceiver_SetBajo Transceiver_Prender Transceiver_EnviarByte 
-  Transceiver_EnviarACK Transceiver_ControlarDato Transceiver_ControlarPaquete 
-  Transceiver_EnviarTurno _PUSH_ARGS_L _ENTER_UNARY_L _ENTER_BINARY_L 
-  _ENTER_BINARY_L_RC _LAND_k_is_k_and_j _LOR_k_is_k_or_j _LCMP_k_rel_j _ILSL 
-  _LINC _LAND_RC _LOR _LLSR _LLSL _LCMP _LCMP_RC _POP32 
+  SPI_SendByte SPI_ReceiveByte LWordSwap FAT_Read_Master_Block Init_Trans 
+  Transceiver_SetAlto Transceiver_SetBajo Transceiver_Prender 
+  Transceiver_EnviarByte Transceiver_EnviarACK Transceiver_ControlarDato 
+  Transceiver_ControlarPaquete Transceiver_EnviarTurno _PUSH_ARGS_L 
+  _ENTER_UNARY_L _ENTER_BINARY_L _ENTER_BINARY_L_RC _LADD_k_is_k_plus_j 
+  _LAND_k_is_k_and_j _LOR_k_is_k_or_j _LCMP_k_rel_j _ILSL _LINC _LADD _LAND_RC 
+  _LOR _LLSR _LLSL _LCMP _LCMP_RC _COPY _POP32 
 SECTION: ".data"
   i.2 
 SECTION: ".bss"
-  index_col 
+  index_col u16Main_Offset pMasterBoot.1 PartitionTable.2 
 SECTION: ".init"
   loadByte Init _Startup 
 SECTION: ".abs_section_ffce"
@@ -471,7 +490,8 @@ SECTION: ".abs_section_ffd4"
   _Vector_21 
 SECTION: ".common"
   timer_turno Buffer_Escritura Buffer_Rx ban_transceiver nro_sec dir_escritura 
-  gSDCard index_fil 
+  gSDCard u16FAT_Sector_Size u16FAT_Cluster_Size u16FAT_FAT_BASE 
+  u16FAT_Root_BASE u16FAT_Data_BASE index_fil 
 SECTION: ".abs_section_0"
   _PTAD 
 SECTION: ".abs_section_1"
@@ -826,14 +846,22 @@ OBJECT LIST SORTED BY ADDRESS
      _TPM3C5V                                    75       2       2       0   .abs_section_75
      i.2                                        100       1       1       4   .data       
      index_col                                  101       2       2       5   .bss        
-     timer_turno                                103       1       1       6   .common     
-     Buffer_Escritura                           104     200     512       6   .common     
-     Buffer_Rx                                  304      23      35       9   .common     
-     ban_transceiver                            327       1       1       4   .common     
-     nro_sec                                    328       1       1       3   .common     
-     dir_escritura                              329       4       4       4   .common     
-     gSDCard                                    32D       3       3       7   .common     
-     index_fil                                  330       2       2       5   .common     
+     u16Main_Offset                             103       2       2       4   .bss        
+     pMasterBoot.1                              105       2       2      10   .bss        
+     PartitionTable.2                           107       2       2       3   .bss        
+     timer_turno                                109       1       1       6   .common     
+     Buffer_Escritura                           10A     200     512       7   .common     
+     Buffer_Rx                                  30A      23      35       9   .common     
+     ban_transceiver                            32D       1       1       4   .common     
+     nro_sec                                    32E       1       1       3   .common     
+     dir_escritura                              32F       4       4       4   .common     
+     gSDCard                                    333       3       3       7   .common     
+     u16FAT_Sector_Size                         336       2       2       1   .common     
+     u16FAT_Cluster_Size                        338       2       2       1   .common     
+     u16FAT_FAT_BASE                            33A       2       2       3   .common     
+     u16FAT_Root_BASE                           33C       2       2       3   .common     
+     u16FAT_Data_BASE                           33E       2       2       2   .common     
+     index_fil                                  340       2       2       5   .common     
      _SRS                                      1800       1       1       3   .abs_section_1800
      _SBDFR                                    1801       1       1       0   .abs_section_1801
      _SOPT1                                    1802       1       1       1   .abs_section_1802
@@ -905,40 +933,45 @@ OBJECT LIST SORTED BY ADDRESS
      main                                      81C3      9D     157       1   .text       
      SD_SendCommand                            8260      9A     154       8   .text       
      SD_ReadData                               82FA      61      97       2   .text       
-     SD_Init                                   835B     1CD     461      16   .text       
-     SD_ReadSector                             8528      62      98       1   .text       
-     SD_WriteSector                            858A      82     130       2   .text       
-     SD_Escribir                               860C      B1     177       1   .text       
-     SD_LeerDireccion                          86BD      3F      63       1   .text       
-     SD_CalculaDireccion                       86FC     100     256       1   .text       
-     SPI_Init                                  87FC       D      13       2   .text       
-     SPI_SendByte                              8809       C      12       9   .text       
-     SPI_ReceiveByte                           8815       C      12       9   .text       
-     Init_Trans                                8821     10E     270       1   .text       
-     Transceiver_SetAlto                       892F       6       6       1   .text       
-     Transceiver_SetBajo                       8935       6       6       1   .text       
-     Transceiver_Prender                       893B       4       4       2   .text       
-     Transceiver_EnviarByte                    893F      1A      26       9   .text       
-     Transceiver_EnviarACK                     8959      2E      46       1   .text       
-     Transceiver_ControlarDato                 8987      3E      62       1   .text       
-     Transceiver_ControlarPaquete              89C5      AC     172       2   .text       
-     Transceiver_EnviarTurno                   8A71      3D      61       1   .text       
-     _PUSH_ARGS_L                              8AAE      20      32       2   .text       
-     _ENTER_UNARY_L                            8ACE      29      41       3   .text       
-     _ENTER_BINARY_L                           8AF7      16      22       2   .text       
-     _ENTER_BINARY_L_RC                        8B0D      19      25       2   .text       
-     _LAND_k_is_k_and_j                        8B26      1F      31       1   .text       
-     _LOR_k_is_k_or_j                          8B45      1F      31       1   .text       
-     _LCMP_k_rel_j                             8B64      1F      31       2   .text       
-     _ILSL                                     8B83       C      12       2   .text       
-     _LINC                                     8B8F      16      22       4   .text       
-     _LAND_RC                                  8BA5       6       6       2   .text       
-     _LOR                                      8BAB       6       6       6   .text       
-     _LLSR                                     8BB1      16      22       1   .text       
-     _LLSL                                     8BC7      16      22       8   .text       
-     _LCMP                                     8BDD       6       6       1   .text       
-     _LCMP_RC                                  8BE3       6       6       1   .text       
-     _POP32                                    8BE9      1A      26      18   .text       
+     SD_Init                                   835B     1D3     467      16   .text       
+     SD_ReadSector                             852E      62      98       3   .text       
+     SD_WriteSector                            8590      82     130       2   .text       
+     SD_Escribir                               8612      B1     177       1   .text       
+     SD_LeerDireccion                          86C3      3E      62       1   .text       
+     SD_CalculaDireccion                       8701     100     256       1   .text       
+     SPI_Init                                  8801       D      13       2   .text       
+     SPI_SendByte                              880E       C      12       9   .text       
+     SPI_ReceiveByte                           881A       C      12       9   .text       
+     LWordSwap                                 8826      7E     126       1   .text       
+     FAT_Read_Master_Block                     88A4     19F     415       8   .text       
+     Init_Trans                                8A43     10E     270       1   .text       
+     Transceiver_SetAlto                       8B51       6       6       1   .text       
+     Transceiver_SetBajo                       8B57       6       6       1   .text       
+     Transceiver_Prender                       8B5D       4       4       2   .text       
+     Transceiver_EnviarByte                    8B61      1A      26       9   .text       
+     Transceiver_EnviarACK                     8B7B      2E      46       1   .text       
+     Transceiver_ControlarDato                 8BA9      3E      62       1   .text       
+     Transceiver_ControlarPaquete              8BE7      AC     172       2   .text       
+     Transceiver_EnviarTurno                   8C93      3D      61       1   .text       
+     _PUSH_ARGS_L                              8CD0      20      32       2   .text       
+     _ENTER_UNARY_L                            8CF0      29      41       3   .text       
+     _ENTER_BINARY_L                           8D19      16      22       3   .text       
+     _ENTER_BINARY_L_RC                        8D2F      19      25       2   .text       
+     _LADD_k_is_k_plus_j                       8D48      1F      31       1   .text       
+     _LAND_k_is_k_and_j                        8D67      1F      31       1   .text       
+     _LOR_k_is_k_or_j                          8D86      1F      31       1   .text       
+     _LCMP_k_rel_j                             8DA5      1F      31       2   .text       
+     _ILSL                                     8DC4       C      12       2   .text       
+     _LINC                                     8DD0      16      22       4   .text       
+     _LADD                                     8DE6       6       6       3   .text       
+     _LAND_RC                                  8DEC       6       6       4   .text       
+     _LOR                                      8DF2       6       6       6   .text       
+     _LLSR                                     8DF8      16      22       3   .text       
+     _LLSL                                     8E0E      16      22      10   .text       
+     _LCMP                                     8E24       6       6       1   .text       
+     _LCMP_RC                                  8E2A       6       6       1   .text       
+     _COPY                                     8E30      30      48       1   .text       
+     _POP32                                    8E60      1A      26      22   .text       
      _Vector_24                                FFCE       2       2       0   .abs_section_ffce
      _Vector_22                                FFD2       2       2       0   .abs_section_ffd2
      _Vector_21                                FFD4       2       2       0   .abs_section_ffd4
@@ -958,20 +991,20 @@ transceiver_c.obj:
 rtshc08.o (ansiis.lib):
   _PUSH_ARGS_D _ENTER_UNARY_L64 _ENTER_UNARY_L64_4 _ENTER_BINARY_L_LC 
   _ENTER_BINARY_L64 _ENTER_BINARY_L64_LC _ENTER_BINARY_L64_RC _IDIVMOD 
-  _SPLITSIGN _LADD_k_is_k_plus_j _k_is_k_plus_j_l _k_is_k_plus_j_i 
-  _LSUB_k_is_k_minus_j _LXOR_k_is_k_xor_j _LMUL_k_is_k_mul_j _LDIVMOD _NEG_L_HX 
-  _ABS_L_HX _SPLITSIGN_L _LMODU_k_is_k_mod_j _LDIVU_k_is_k_div_j 
-  _LMODS_k_is_k_mod_j _LDIVS_k_is_k_div_j _CMP24_k_rel_j _BMULS _BDIVS _BMODS 
-  _IMUL_STAR08 _IDIVS_STAR08 _IDIVU_STAR08 _IMODS_STAR08 _IMODU_STAR08 _IDIVU_8 
-  _IMODU_8 _IASR _ILSR _ICMP _LDEC _LNEG _LNOT _LADD _LADD_RC _LSUB _LSUB_LC 
-  _LSUB_RC _LAND _LOR_RC _LXOR _LXOR_RC _LMUL _LMUL_RC _LDIVS _LDIVS_LC 
-  _LDIVS_RC _LDIVU _LDIVU_LC _LDIVU_RC _LMODS _LMODS_LC _LMODS_RC _LMODU 
-  _LMODU_LC _LMODU_RC _LASR _PUSH_ARGS_24 _ENTER_BINARY_24_RC _ENTER_BINARY_24 
-  _CMP24 _CMP24_RC _COPY _COPY_L _POP64 _STORE32 _STORE64 _SEXT8_32 _SEXT16_32 
-  _CALL_STAR08 _CALL_STAR08_FAR _Jump_Table_Addr _Jump_Table_Offset 
-  _Jump_Table_Header_Addr _Jump_Table_Header_Offset _Search_Table_16_Addr 
-  _Search_Table_16_Offset _Search_Table_8_Addr _Search_Table_8_Offset _PUSH_CC 
-  _POP_CC _CONV_FAR_TO_NEAR _CONV_FAR_TO_LINEAR _CONV_LINEAR_TO_FAR 
+  _SPLITSIGN _k_is_k_plus_j_l _k_is_k_plus_j_i _LSUB_k_is_k_minus_j 
+  _LXOR_k_is_k_xor_j _LMUL_k_is_k_mul_j _LDIVMOD _NEG_L_HX _ABS_L_HX 
+  _SPLITSIGN_L _LMODU_k_is_k_mod_j _LDIVU_k_is_k_div_j _LMODS_k_is_k_mod_j 
+  _LDIVS_k_is_k_div_j _CMP24_k_rel_j _BMULS _BDIVS _BMODS _IMUL_STAR08 
+  _IDIVS_STAR08 _IDIVU_STAR08 _IMODS_STAR08 _IMODU_STAR08 _IDIVU_8 _IMODU_8 
+  _IASR _ILSR _ICMP _LDEC _LNEG _LNOT _LADD_RC _LSUB _LSUB_LC _LSUB_RC _LAND 
+  _LOR_RC _LXOR _LXOR_RC _LMUL _LMUL_RC _LDIVS _LDIVS_LC _LDIVS_RC _LDIVU 
+  _LDIVU_LC _LDIVU_RC _LMODS _LMODS_LC _LMODS_RC _LMODU _LMODU_LC _LMODU_RC 
+  _LASR _PUSH_ARGS_24 _ENTER_BINARY_24_RC _ENTER_BINARY_24 _CMP24 _CMP24_RC 
+  _COPY_L _POP64 _STORE32 _STORE64 _SEXT8_32 _SEXT16_32 _CALL_STAR08 
+  _CALL_STAR08_FAR _Jump_Table_Addr _Jump_Table_Offset _Jump_Table_Header_Addr 
+  _Jump_Table_Header_Offset _Search_Table_16_Addr _Search_Table_16_Offset 
+  _Search_Table_8_Addr _Search_Table_8_Offset _PUSH_CC _POP_CC 
+  _CONV_FAR_TO_NEAR _CONV_FAR_TO_LINEAR _CONV_LINEAR_TO_FAR 
 NOT USED VARIABLES
 rtshc08.o (ansiis.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
@@ -979,13 +1012,13 @@ rtshc08.o (ansiis.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0x8C03 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0x8E7A ---- SIZE       4 ---
 Filling bytes inserted
  00010100
-------- ROM-ADDRESS: 0x8C07 ---- RAM-ADDRESS: 0x100 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0x8E7E ---- RAM-ADDRESS: 0x100 ---- SIZE       1 ---
 Name of initialized Object : i.2
  10
-------- ROM-ADDRESS: 0x8C08 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0x8E7F ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1016,20 +1049,26 @@ main                      USES ban_transceiver Init_CPU Init_Trans Init_LED
 SD_SendCommand            USES _LAND_RC _LLSR SPI_SendByte SPI_ReceiveByte 
 SD_ReadData               USES SPI_ReceiveByte _LINC _POP32 _LCMP _LCMP_RC 
 SD_Init                   USES gSDCard SPI_Init _PTBD SPI_SendByte 
-                                SD_SendCommand SD_Init SD_ReadData SD_LeerDireccion 
+                                SD_SendCommand SD_Init SD_ReadData Buffer_Escritura 
+                                FAT_Read_Master_Block SD_LeerDireccion 
 SD_ReadSector             USES _SRS gSDCard _LLSL _POP32 _PTBD SD_SendCommand 
                                 SPI_ReceiveByte SD_ReadData 
 SD_WriteSector            USES _SRS _PTBD gSDCard _LLSL _POP32 SD_SendCommand 
                                 SPI_SendByte SPI_ReceiveByte 
 SD_Escribir               USES SPI_Init _LLSL _POP32 _LOR SD_WriteSector 
                                 Cpu_Delay100US 
-SD_LeerDireccion          USES _PTBD Buffer_Escritura SD_ReadSector 
-                                dir_escritura Cpu_Delay100US 
+SD_LeerDireccion          USES _PTBD u16FAT_Data_BASE Buffer_Escritura 
+                                SD_ReadSector dir_escritura Cpu_Delay100US 
 SD_CalculaDireccion       USES _LLSL _POP32 _LOR _LINC _PTBD dir_escritura 
                                 SD_WriteSector 
 SPI_Init                  USES _PTBD _PTBDD _SPIBR _SPIC2 _SPIC1 
 SPI_SendByte              USES _SPIS _SPID 
 SPI_ReceiveByte           USES _SPID SPI_SendByte _SPIS 
+LWordSwap                 USES _LAND_RC _LLSR _POP32 _LADD _LLSL _COPY 
+FAT_Read_Master_Block     USES u16Main_Offset SD_ReadSector pMasterBoot.1 
+                                PartitionTable.2 FAT_Read_Master_Block LWordSwap 
+                                u16FAT_Cluster_Size u16FAT_Sector_Size u16FAT_FAT_BASE 
+                                u16FAT_Root_BASE u16FAT_Data_BASE 
 Init_Trans                USES _SCI2BD _SCI2C1 _SCI2C3 _SCI2C2 _PTADD 
                                 Transceiver_Prender Transceiver_SetBajo Transceiver_EnviarByte 
                                 _SCI2S1 _SCI2D 
@@ -1047,6 +1086,7 @@ Transceiver_EnviarTurno   USES i.2 Transceiver_EnviarByte LED_BrillarR
 _ENTER_BINARY_L           USES _PUSH_ARGS_L 
 _ENTER_BINARY_L_RC        USES _PUSH_ARGS_L 
 _LINC                     USES _ENTER_UNARY_L 
+_LADD                     USES _ENTER_BINARY_L _LADD_k_is_k_plus_j 
 _LAND_RC                  USES _ENTER_BINARY_L_RC _LAND_k_is_k_and_j 
 _LOR                      USES _ENTER_BINARY_L _LOR_k_is_k_or_j 
 _LLSR                     USES _ENTER_UNARY_L 
@@ -1130,22 +1170,44 @@ DEPENDENCY TREE
  |  |  |     |  
  |  |  |     +- _LCMP_k_rel_j        (see above)
  |  |  |        
+ |  |  +- FAT_Read_Master_Block
+ |  |  |  | 
+ |  |  |  +- SD_ReadSector       
+ |  |  |  |  | 
+ |  |  |  |  +- _LLSL               
+ |  |  |  |  |  | 
+ |  |  |  |  |  +- _ENTER_UNARY_L       (see above)
+ |  |  |  |  |     
+ |  |  |  |  +- _POP32               (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- SD_SendCommand       (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- SPI_ReceiveByte      (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- SD_ReadData          (see above)
+ |  |  |  |     
+ |  |  |  +- LWordSwap           
+ |  |  |     | 
+ |  |  |     +- _LAND_RC             (see above)
+ |  |  |     |  
+ |  |  |     +- _LLSR                (see above)
+ |  |  |     |  
+ |  |  |     +- _POP32               (see above)
+ |  |  |     |  
+ |  |  |     +- _LADD               
+ |  |  |     |  | 
+ |  |  |     |  +- _ENTER_BINARY_L      (see above)
+ |  |  |     |  |  
+ |  |  |     |  +- _LADD_k_is_k_plus_j 
+ |  |  |     |       
+ |  |  |     +- _LLSL                (see above)
+ |  |  |     |  
+ |  |  |     +- _COPY               
+ |  |  |          
  |  |  +- SD_LeerDireccion    
  |  |     | 
- |  |     +- SD_ReadSector       
- |  |     |  | 
- |  |     |  +- _LLSL               
- |  |     |  |  | 
- |  |     |  |  +- _ENTER_UNARY_L       (see above)
- |  |     |  |     
- |  |     |  +- _POP32               (see above)
- |  |     |  |  
- |  |     |  +- SD_SendCommand       (see above)
- |  |     |  |  
- |  |     |  +- SPI_ReceiveByte      (see above)
- |  |     |  |  
- |  |     |  +- SD_ReadData          (see above)
- |  |     |     
+ |  |     +- SD_ReadSector        (see above)
+ |  |     |  
  |  |     +- Cpu_Delay100US      
  |  |          
  |  +- LED_BrillarR        
@@ -1258,6 +1320,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 7
-Total size of all blocks to be downloaded: 3090
+Number of blocks to be downloaded: 6
+Total size of all blocks to be downloaded: 3721
 

@@ -9,5 +9,6 @@ Sources/sd_c.obj: \
 	D:/VicuTrackBase/Project_Headers/led.h \
 	D:/VicuTrackBase/Project_Headers/types.h \
 	D:/VicuTrackBase/Project_Headers/sd_command.h \
-	D:/VicuTrackBase/Project_Headers/spi.h 
+	D:/VicuTrackBase/Project_Headers/spi.h \
+	D:/VicuTrackBase/Project_Headers/storage.h 
 

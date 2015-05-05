@@ -9,6 +9,7 @@
 "$(ProjDirPath)/FLASH/Sources/main_c.obj"
 "$(ProjDirPath)/FLASH/Sources/sd_c.obj"
 "$(ProjDirPath)/FLASH/Sources/spi_c.obj"
+"$(ProjDirPath)/FLASH/Sources/storage_c.obj"
 "$(ProjDirPath)/FLASH/Sources/transceiver_c.obj"
 "$(ProjDirPath)/FLASH/Project_Settings/Startup_Code/start08_c.obj"
 "$(ProjDirPath)/FLASH/Lib/mc9s08qe32_c.obj"

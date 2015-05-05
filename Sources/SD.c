@@ -4,6 +4,7 @@
  */
 
 #include "sd.h"
+#include "storage.h"
 
 //! Vector que almacena la direccion en donde debe realizarse la proxima escritura de datos
 byte dir_escritura[4];
@@ -16,6 +17,7 @@ struct {
 } gSDCard;
 
 extern UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid];
+extern UINT16 u16FAT_Data_BASE;
 
 UINT8 SD_SendCommand(UINT8 u8SDCommand, UINT32 u32Param, UINT8 pu32Response[], UINT8 u8ResponseLength) {
   UINT8 u8R1;
@@ -273,6 +275,7 @@ UINT8 SD_Init(void) {
   if(u8R1 & SD_R1_ERROR_MASK) return (SD_FAIL_INIT);
   
   //SPI_HighRate();	//Cambio el baudrate
+  FAT_Read_Master_Block((UINT8 *)Buffer_Escritura);
   (void) SD_LeerDireccion();
   return (SD_OK);
 }
@@ -368,13 +371,13 @@ error SD_Escribir(byte *direccion,UINT8 buf[][tam_datoconid]){
 }
 
 error SD_LeerDireccion(){
-	UINT32 u32SD_Block;
+	//UINT32 u32SD_Block;
     int h=0, i=0;
     (void)SD_Assert();
     
-    u32SD_Block=DIRECCION_BIN; // Cargar la direccion del sector fisico donde se encuentran las direcciones de lectura y escritura
+    //u32SD_Block=DIRECCION_BIN; // Cargar la direccion del sector fisico donde se encuentran las direcciones de lectura y escritura
     
-    (void)SD_ReadSector(u32SD_Block, (UINT8 *) Buffer_Escritura); //Lee el sector que contiene las direcciones de lectura y escritura
+    (void)SD_ReadSector((UINT32) u16FAT_Data_BASE, (UINT8 *) Buffer_Escritura); //Lee el sector que contiene las direcciones de lectura y escritura
     
     for(i=0;i<4;i++)
     	dir_escritura[i] = Buffer_Escritura[0][i];
