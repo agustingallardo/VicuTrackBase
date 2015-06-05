@@ -262,7 +262,7 @@ MODULE:                 -- storage_c.obj --
      u16FAT_Cluster_Size                        338       2       2       1   .common     
      u16FAT_FAT_BASE                            33A       2       2       3   .common     
      u16FAT_Root_BASE                           33C       2       2       3   .common     
-     u16FAT_Data_BASE                           33E       2       2       2   .common     
+     u16FAT_Data_BASE                           33E       2       2       3   .common     
 MODULE:                 -- transceiver_c.obj --
 - PROCEDURES:
      Init_Trans                                8A43     10E     270       1   .text       
@@ -860,7 +860,7 @@ OBJECT LIST SORTED BY ADDRESS
      u16FAT_Cluster_Size                        338       2       2       1   .common     
      u16FAT_FAT_BASE                            33A       2       2       3   .common     
      u16FAT_Root_BASE                           33C       2       2       3   .common     
-     u16FAT_Data_BASE                           33E       2       2       2   .common     
+     u16FAT_Data_BASE                           33E       2       2       3   .common     
      index_fil                                  340       2       2       5   .common     
      _SRS                                      1800       1       1       3   .abs_section_1800
      _SBDFR                                    1801       1       1       0   .abs_section_1801
@@ -1060,7 +1060,7 @@ SD_Escribir               USES SPI_Init _LLSL _POP32 _LOR SD_WriteSector
 SD_LeerDireccion          USES _PTBD u16FAT_Data_BASE Buffer_Escritura 
                                 SD_ReadSector dir_escritura Cpu_Delay100US 
 SD_CalculaDireccion       USES _LLSL _POP32 _LOR _LINC _PTBD dir_escritura 
-                                SD_WriteSector 
+                                u16FAT_Data_BASE SD_WriteSector 
 SPI_Init                  USES _PTBD _PTBDD _SPIBR _SPIC2 _SPIC1 
 SPI_SendByte              USES _SPIS _SPID 
 SPI_ReceiveByte           USES _SPID SPI_SendByte _SPIS 

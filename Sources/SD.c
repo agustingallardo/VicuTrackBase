@@ -416,6 +416,6 @@ error SD_CalculaDireccion(byte * dir, UINT8 buf[][tam_dato]){
 	for(;i<8;i++)
 	    	buf[0][i] = 0x00;
 	
-	(void) SD_WriteSector((UINT32) DIRECCION_BIN, (UINT8 *) buf);
+	(void) SD_WriteSector((UINT32) u16FAT_Data_BASE, (UINT8 *) buf);
     return _ERR_OK;            
 }
