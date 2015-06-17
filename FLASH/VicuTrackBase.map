@@ -272,11 +272,33 @@ MODULE:                 -- storage_c.obj --
      u16Main_Offset                             103       2       2       4   .bss        
      pMasterBoot.1                              105       2       2      10   .bss        
      PartitionTable.2                           107       2       2       3   .bss        
+<<<<<<< HEAD
      u16FAT_Sector_Size                         338       2       2       1   .common     
      u16FAT_Cluster_Size                        33A       2       2       1   .common     
      u16FAT_FAT_BASE                            33C       2       2       3   .common     
      u16FAT_Root_BASE                           33E       2       2       3   .common     
      u16FAT_Data_BASE                           340       2       2       2   .common     
+=======
+     u16FAT_Sector_Size                         336       2       2       1   .common     
+     u16FAT_Cluster_Size                        338       2       2       1   .common     
+     u16FAT_FAT_BASE                            33A       2       2       3   .common     
+     u16FAT_Root_BASE                           33C       2       2       3   .common     
+     u16FAT_Data_BASE                           33E       2       2       3   .common     
+MODULE:                 -- transceiver_c.obj --
+- PROCEDURES:
+     Init_Trans                                8A43     10E     270       1   .text       
+     Transceiver_SetAlto                       8B51       6       6       1   .text       
+     Transceiver_SetBajo                       8B57       6       6       1   .text       
+     Transceiver_Prender                       8B5D       4       4       2   .text       
+     Transceiver_EnviarByte                    8B61      1A      26       9   .text       
+     Transceiver_EnviarACK                     8B7B      2E      46       1   .text       
+     Transceiver_ControlarDato                 8BA9      3E      62       1   .text       
+     Transceiver_ControlarPaquete              8BE7      AC     172       2   .text       
+     Transceiver_EnviarTurno                   8C93      3D      61       1   .text       
+- VARIABLES:
+     i.2                                        100       1       1       4   .data       
+     index_fil                                  340       2       2       5   .common     
+>>>>>>> 20fb952bc4e7ca6cf2f0fa2cd85d519a35cf17c6
 MODULE:                 -- start08_c.obj --
 - PROCEDURES:
      loadByte                                  8000       E      14       5   .init       
@@ -849,6 +871,7 @@ OBJECT LIST SORTED BY ADDRESS
      u16Main_Offset                             103       2       2       4   .bss        
      pMasterBoot.1                              105       2       2      10   .bss        
      PartitionTable.2                           107       2       2       3   .bss        
+<<<<<<< HEAD
      timer_turno                                109       1       1       7   .common     
      dir_escritura                              10A       4       4       4   .common     
      gSDCard                                    10E       3       3       7   .common     
@@ -862,6 +885,21 @@ OBJECT LIST SORTED BY ADDRESS
      u16FAT_FAT_BASE                            33C       2       2       3   .common     
      u16FAT_Root_BASE                           33E       2       2       3   .common     
      u16FAT_Data_BASE                           340       2       2       2   .common     
+=======
+     timer_turno                                109       1       1       6   .common     
+     Buffer_Escritura                           10A     200     512       7   .common     
+     Buffer_Rx                                  30A      23      35       9   .common     
+     ban_transceiver                            32D       1       1       4   .common     
+     nro_sec                                    32E       1       1       3   .common     
+     dir_escritura                              32F       4       4       4   .common     
+     gSDCard                                    333       3       3       7   .common     
+     u16FAT_Sector_Size                         336       2       2       1   .common     
+     u16FAT_Cluster_Size                        338       2       2       1   .common     
+     u16FAT_FAT_BASE                            33A       2       2       3   .common     
+     u16FAT_Root_BASE                           33C       2       2       3   .common     
+     u16FAT_Data_BASE                           33E       2       2       3   .common     
+     index_fil                                  340       2       2       5   .common     
+>>>>>>> 20fb952bc4e7ca6cf2f0fa2cd85d519a35cf17c6
      _SRS                                      1800       1       1       3   .abs_section_1800
      _SBDFR                                    1801       1       1       0   .abs_section_1801
      _SOPT1                                    1802       1       1       1   .abs_section_1802
@@ -1055,7 +1093,19 @@ SD_Escribir               USES SPI_Init _LLSL _POP32 _LOR SD_WriteSector
 SD_LeerDireccion          USES _PTBD u16FAT_Data_BASE Buffer_Escritura 
                                 SD_ReadSector dir_escritura Cpu_Delay100US 
 SD_CalculaDireccion       USES _LLSL _POP32 _LOR _LINC _PTBD dir_escritura 
+<<<<<<< HEAD
                                 SD_WriteSector 
+=======
+                                u16FAT_Data_BASE SD_WriteSector 
+SPI_Init                  USES _PTBD _PTBDD _SPIBR _SPIC2 _SPIC1 
+SPI_SendByte              USES _SPIS _SPID 
+SPI_ReceiveByte           USES _SPID SPI_SendByte _SPIS 
+LWordSwap                 USES _LAND_RC _LLSR _POP32 _LADD _LLSL _COPY 
+FAT_Read_Master_Block     USES u16Main_Offset SD_ReadSector pMasterBoot.1 
+                                PartitionTable.2 FAT_Read_Master_Block LWordSwap 
+                                u16FAT_Cluster_Size u16FAT_Sector_Size u16FAT_FAT_BASE 
+                                u16FAT_Root_BASE u16FAT_Data_BASE 
+>>>>>>> 20fb952bc4e7ca6cf2f0fa2cd85d519a35cf17c6
 Init_Trans                USES _SCI2BD _SCI2C1 _SCI2C3 _SCI2C2 _PTADD 
                                 Transceiver_Prender Transceiver_SetBajo Transceiver_EnviarByte 
                                 _SCI2S1 _SCI2D 

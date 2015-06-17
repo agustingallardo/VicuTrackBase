@@ -60,7 +60,7 @@ void main(void) {
         	if(Transceiver_ControlarPaquete()==_ERR_OK)
         		(void)Transceiver_EnviarACK(Buffer_Rx[0],Buffer_Rx[2]);
             else
-            	intentos++;
+            	intentos++; //no se usa
             EnableInterrupts;
         }
         __RESET_WATCHDOG();
