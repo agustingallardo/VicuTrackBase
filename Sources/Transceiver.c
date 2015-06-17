@@ -12,6 +12,7 @@ extern byte Buffer_Rx[tam_paquete];
 extern UINT8 Buffer_Escritura[cantidad_datos][tam_datoconid];
 extern byte dir_escritura[4];
 extern byte nro_sec;
+extern byte timer_turno;
 
 error Init_Trans(void){
     byte i, CadenaInit[19]="WR 455000 3 9 3 0\r\n"; //configuracion del transceiver f=455MHz, Data Rate 9600bps, output power 100mw
@@ -128,19 +129,23 @@ error Transceiver_ControlarPaquete(void){
          
           if(nro_sec != Buffer_Rx[2]){ 	
              nro_sec=Buffer_Rx[2];
-             if(Transceiver_ControlarDato() != _ERR_OK)
-            	 return _ERR_ACK;              
-             Buffer_Escritura[index_fil][0]=Buffer_Rx[0];// GUARDAMOS EL ID
-             for(k=3;k<tam_paquete-1;k++)// copiamos los datos controlados al buffer para q se escriba una vez lleno
-            	 Buffer_Escritura[index_fil][k-2]=Buffer_Rx[k];
-             index_fil++;
-             if(index_fil>=cantidad_datos){
-            	 index_fil=0;
-            	 (void)SD_Escribir(dir_escritura,Buffer_Escritura); // cuando esto ocurre se desabilitan 
-            	 (void)SD_CalculaDireccion(dir_escritura,Buffer_Escritura);
-            	 LED_BrillarR(2,300);
-            	 LED_BrillarV(2,300);
-              }
+             if(Buffer_Rx[1]==0x01){
+            	 timer_turno=0;
+            	 return _ERR_OK; 
+             }
+			 if(Transceiver_ControlarDato() != _ERR_OK)
+				 return _ERR_ACK;              
+			 Buffer_Escritura[index_fil][0]=Buffer_Rx[0];// GUARDAMOS EL ID
+			 for(k=3;k<tam_paquete-1;k++)// copiamos los datos controlados al buffer para q se escriba una vez lleno
+				 Buffer_Escritura[index_fil][k-2]=Buffer_Rx[k];
+			 index_fil++;
+			 if(index_fil>=cantidad_datos){
+				 index_fil=0;
+				 (void)SD_Escribir(dir_escritura,Buffer_Escritura); // cuando esto ocurre se desabilitan 
+				 (void)SD_CalculaDireccion(dir_escritura,Buffer_Escritura);
+				 LED_BrillarR(2,300);
+				 LED_BrillarV(2,300);
+			  }
           }//cierra el if de nro sec
 return _ERR_OK;
 }
