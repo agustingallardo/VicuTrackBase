@@ -16,7 +16,7 @@ byte timer_turno;
 //int c;
 //int d;
 
-extern int index_col;
+int index_col;
 extern byte Buffer_Rx[tam_paquete]; 
 extern byte ban_transceiver;
 
@@ -99,20 +99,17 @@ void CPU_ApagarRTC(){
 }
 
 interrupt VectorNumber_Vrtc void ISR_RTC(void){
-    
     RTCSC = RTCSC | 0x80;   //limpiamos la bandera de interrupcion.
-        
-    timer_turno--;
-    
-    index_col=0;
-             
+    if(timer_turno>0)
+    	timer_turno--;        
 }
 
 interrupt VectorNumber_Vsci2rx void ISR_TRANSCEIVER(void){
     error result=0;
-       
-    timer_turno=4;
     
+    if(index_col>0 && timer_turno<4)
+    	index_col=0;
+    timer_turno=4;
     (void)SCI2S1;
 
     Buffer_Rx[index_col]=SCI2D; // guardamos los bytes recibidos

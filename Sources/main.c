@@ -44,24 +44,25 @@ void main(void) {
     EnableInterrupts;
     CPU_PrenderRTC(RTC_1SEG,5);
     timer_turno=0;
-   
+	EnableInterrupts;
 //---Comienza el trabajo---// 
     
     for(;;){
-    	EnableInterrupts;
         if(timer_turno==0){    // transmitimos 1 turno cada 2seg si no hay ninguna conexion activa.
             nro_sec=0;
             timer_turno=1;
             (void)Transceiver_EnviarTurno();
         }
         if(ban_transceiver==HAYPAQUETE){
-        	DisableInterrupts;
+        	//DisableInterrupts;
+        	//CPU_ApagarRTC();
         	ban_transceiver=Buffer_Vacio;
         	if(Transceiver_ControlarPaquete()==_ERR_OK)
         		(void)Transceiver_EnviarACK(Buffer_Rx[0],Buffer_Rx[2]);
             else
             	intentos++; //no se usa
-            EnableInterrupts;
+            //EnableInterrupts;
+            //CPU_PrenderRTC(RTC_1SEG,5);
         }
         __RESET_WATCHDOG();
     }
