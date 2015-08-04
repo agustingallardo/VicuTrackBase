@@ -2,7 +2,8 @@
  @file sd.h
  @brief Declara constantes y funciones para el manejo de la sd
  */
-
+#ifndef SD_H
+#define SD_H
 #include "derivative.h"
 #include "error.h"
 #include "cpu.h"
@@ -136,3 +137,5 @@ error SD_LeerDireccion(void);
     @li @c _ERR_OK 1 No se produjo un error
 */
 error SD_CalculaDireccion(byte *dir, UINT8 buf[][tam_dato]); 
+
+#endif

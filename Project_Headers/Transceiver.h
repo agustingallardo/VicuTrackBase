@@ -2,7 +2,8 @@
  @file transceiver.h
  @brief Declara constantes y funciones para el manejo del transceiver
  */
-
+#ifndef TRANSCEIVER_H
+#define TRANSCEIVER_H
 #include "derivative.h"
 #include "error.h"
 #include "cpu.h"
@@ -123,3 +124,4 @@ error Transceiver_ControlarPaquete(void);
    @return 1 _ERR_OK
  */
 error Transceiver_EnviarTurno(void);
+#endif

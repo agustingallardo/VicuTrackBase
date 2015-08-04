@@ -2,7 +2,8 @@
  @file error.h
  @brief Declara constantes para el manejo de errores
  */
-
+#ifndef ERROR_H
+#define ERROR_H
 //! Define el tipo de dato 'error' como un entero
 #define error int
 
@@ -23,3 +24,5 @@
 #define _ERR_BUFFER_LLENO 14
 #define _ERR_DATO_LLENO 15
 #define _ERR_DISTINTO 16
+
+#endif

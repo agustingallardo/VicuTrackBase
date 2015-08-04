@@ -2,7 +2,8 @@
  @file led.h
  @brief Declara constantes y funciones para el manejo de los leds
  */
-
+#ifndef LED_H
+#define LED_H
 #include "derivative.h"
 #include "error.h"
 
@@ -47,4 +48,4 @@ void LED_ApagarV(void);
 @param[in] word indica por cuantos cientos de milisegundos el led permanece en estado apagado o encendido
 */
 void LED_BrillarV(int , word);
-
+#endif

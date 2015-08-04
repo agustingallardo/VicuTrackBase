@@ -2,6 +2,8 @@
  @file cpu.h
  @brief Declara constantes y funciones para el manejo del cpu
  */
+#ifndef CPU_H
+#define CPU_H
 
 #include "derivative.h"
 #include "error.h"
@@ -33,7 +35,7 @@
     (bool)((getReg8(PTAD) & 0x40))       \
   )*/
 //! Cantidad de dispositivos moviles en funcionamiento. Utilizado en el momento de enviar turnos para la transmision de datos
-#define CANT_DISP 0x11
+#define CANT_DISP 0x12
 //#define CORRIENDO 0
 //#define FIN       1
 
@@ -77,3 +79,4 @@ void CPU_PrenderRTC(byte,byte);
     RTCSC=0x80
 */
 void CPU_ApagarRTC(void);
+#endif

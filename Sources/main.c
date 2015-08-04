@@ -28,7 +28,6 @@ extern byte timer_turno;
 void main(void) {  
     error temp=0, escribir=0;                   
     long intentos=0;
-    
 //---Inicializacion---//    
     ban_transceiver=Buffer_Vacio;
     //ban_sd=Buffer_Vacio;

@@ -2,7 +2,8 @@
  @file storage.h
  @brief Declara constantes y funciones para el manejo del cpu
  */
-
+#ifndef STORAGE_H
+#define STORAGE_H
 #include<derivative.h>
 #include "types.h"
 
@@ -70,3 +71,5 @@ UINT32 LWordSwap(UINT32);
  @li @c Ubicacion del primer archivo de la particion
  */
 void   FAT_Read_Master_Block(UINT8 *);
+
+#endif

@@ -2,7 +2,8 @@
  @file sd_command.h
  @brief Declara constantes para el manejo de la sd
  */
-
+#ifndef SD_COMMAND
+#define SD_COMMAND
 //! Define constantes 
 #define SD_IF_COND_VHS_MASK        (0x00000F00L)
 #define SD_IF_COND_VHS_27_36       (0x00000100L)
@@ -43,3 +44,5 @@
 #define SD_R1_PARAM_ERROR          (1 << 6)
 #define SD_R1_START_MASK           (1 << 7)
 #define SD_R1_ERROR_MASK           (0x7E)
+
+#endif

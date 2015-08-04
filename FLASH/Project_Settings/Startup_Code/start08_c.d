@@ -1,5 +1,4 @@
 
-
 Project_Settings/Startup_Code/start08_c.obj: \
 	D:/Facultad/5\ Año/Proyecto\ Final/CodeWarrior/VicuBase/Project_Headers/../Project_Settings/Startup_Code/start08.c \
 	C:/Freescale/CW\ MCU\ v10.6/MCU/lib/hc08c/include/start08.h \
